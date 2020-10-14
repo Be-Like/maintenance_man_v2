@@ -38,20 +38,24 @@ class _AutoRecordsState extends State<AutoRecords> {
                       builder: (context, scrollController) => AddVehicleForm(
                             scrollController: scrollController,
                           )),
-                  child: CircleAvatar(
-                    backgroundColor: Colors.grey,
-                    child: Text(
-                      '+',
-                      style: CupertinoTheme.of(context)
-                          .textTheme
-                          .textStyle
-                          .copyWith(fontWeight: FontWeight.w400, fontSize: 30),
+                  child: Container(
+                    padding: EdgeInsets.only(left: 15),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.grey,
+                      child: Text(
+                        '+',
+                        style: CupertinoTheme.of(context)
+                            .textTheme
+                            .textStyle
+                            .copyWith(
+                                fontWeight: FontWeight.w400, fontSize: 30),
+                      ),
+                      radius: 40,
                     ),
-                    radius: 40,
                   ),
                 )
               : Container(
-                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  padding: EdgeInsets.only(left: 15),
                   child: CircleAvatar(
                       backgroundColor: _backgroundColors[Random().nextInt(3)],
                       radius: 40,
@@ -59,6 +63,7 @@ class _AutoRecordsState extends State<AutoRecords> {
                         fit: BoxFit.fitHeight,
                         child: Text(
                           '${vehicleModel.vehicles[index].make}\n${vehicleModel.vehicles[index].model}',
+                          textAlign: TextAlign.center,
                           style: CupertinoTheme.of(context)
                               .textTheme
                               .textStyle
@@ -69,47 +74,6 @@ class _AutoRecordsState extends State<AutoRecords> {
                 );
         },
       ),
-      // child: ListView(
-      //   scrollDirection: Axis.horizontal,
-      //   children: [
-      //     Container(
-      //       padding: EdgeInsets.symmetric(horizontal: 15),
-      //       child: CircleAvatar(
-      //           backgroundColor: _backgroundColors[Random().nextInt(3)],
-      //           radius: 40,
-      //           child: FittedBox(
-      //             fit: BoxFit.fitHeight,
-      //             child: Text(
-      //               'DC',
-      //               style: CupertinoTheme.of(context)
-      //                   .textTheme
-      //                   .textStyle
-      //                   .copyWith(fontWeight: FontWeight.w400, fontSize: 30),
-      //             ),
-      //           )),
-      //     ),
-      // GestureDetector(
-      //   onTap: () => showCupertinoModalBottomSheet(
-      //       expand: true,
-      //       context: context,
-      //       backgroundColor: Colors.transparent,
-      //       builder: (context, scrollController) => AddVehicleForm(
-      //             scrollController: scrollController,
-      //           )),
-      //   child: CircleAvatar(
-      //     backgroundColor: Colors.grey,
-      //     child: Text(
-      //       '+',
-      //       style: CupertinoTheme.of(context)
-      //           .textTheme
-      //           .textStyle
-      //           .copyWith(fontWeight: FontWeight.w400, fontSize: 30),
-      //     ),
-      //     radius: 40,
-      //   ),
-      // ),
-      //   ],
-      // ),
     );
   }
 

@@ -27,4 +27,15 @@ class Vehicle {
     return '''Vehicle: { id: $id, year: $year, make: $make,
       model: $model, trim: $vehicleTrim, mileage: $mileage }''';
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'vehicle_id': id,
+      'year': year,
+      'make': make,
+      'model': model,
+      'vehicle_trim': vehicleTrim,
+      'mileage': mileage
+    };
+  }
 }
