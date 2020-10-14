@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:maintenance_man_v2/vehicle.dart';
+import 'package:maintenance_man_v2/vehicle_model.dart';
+import 'package:provider/provider.dart';
 
 class AddVehicleForm extends StatefulWidget {
   final ScrollController scrollController;
@@ -26,7 +28,7 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
   final _trim = TextEditingController();
   final _mileage = TextEditingController();
 
-  void _submitVehicle() {
+  void _submitVehicle(BuildContext context) {
     Vehicle vehicle = new Vehicle(
         year: int.parse(_year.text),
         make: _make.text,
@@ -35,6 +37,9 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
         mileage: int.parse(_mileage.text));
 
     print(vehicle.toString());
+    VehicleModel vehicleModel =
+        Provider.of<VehicleModel>(context, listen: false);
+    vehicleModel.add(vehicle);
   }
 
   @override
@@ -112,7 +117,7 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
                       .textStyle
                       .copyWith(fontWeight: FontWeight.w500, color: Colors.red),
                 ),
-                onPressed: () => _submitVehicle(),
+                onPressed: () => _submitVehicle(context),
               ),
             ],
           ),

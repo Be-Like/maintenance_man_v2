@@ -3,7 +3,9 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:maintenance_man_v2/add_vehicle_form.dart';
+import 'package:maintenance_man_v2/vehicle_model.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:provider/provider.dart';
 
 class AutoRecords extends StatefulWidget {
   @override
@@ -14,6 +16,7 @@ class _AutoRecordsState extends State<AutoRecords> {
   double _displayVehicles = 0;
 
   Widget _vehicleSelection(BuildContext context) {
+    final vehicleModel = Provider.of<VehicleModel>(context);
     List _backgroundColors = [
       Color.fromRGBO(230, 25, 75, 1),
       Color.fromRGBO(0, 128, 128, 1),
@@ -22,47 +25,91 @@ class _AutoRecordsState extends State<AutoRecords> {
 
     return Container(
       color: Color.fromRGBO(255, 255, 255, 0.75),
-      child: ListView(
+      child: ListView.builder(
+        itemCount: vehicleModel.vehicles.length + 1,
         scrollDirection: Axis.horizontal,
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 15),
-            child: CircleAvatar(
-                backgroundColor: _backgroundColors[Random().nextInt(3)],
-                radius: 40,
-                child: FittedBox(
-                  fit: BoxFit.fitWidth,
-                  child: Text(
-                    'DC',
-                    style: CupertinoTheme.of(context)
-                        .textTheme
-                        .textStyle
-                        .copyWith(fontWeight: FontWeight.w400, fontSize: 30),
+        itemBuilder: (context, index) {
+          return index >= vehicleModel.vehicles.length
+              ? GestureDetector(
+                  onTap: () => showCupertinoModalBottomSheet(
+                      expand: true,
+                      context: context,
+                      backgroundColor: Colors.transparent,
+                      builder: (context, scrollController) => AddVehicleForm(
+                            scrollController: scrollController,
+                          )),
+                  child: CircleAvatar(
+                    backgroundColor: Colors.grey,
+                    child: Text(
+                      '+',
+                      style: CupertinoTheme.of(context)
+                          .textTheme
+                          .textStyle
+                          .copyWith(fontWeight: FontWeight.w400, fontSize: 30),
+                    ),
+                    radius: 40,
                   ),
-                )),
-          ),
-          GestureDetector(
-            onTap: () => showCupertinoModalBottomSheet(
-                expand: true,
-                context: context,
-                backgroundColor: Colors.transparent,
-                builder: (context, scrollController) => AddVehicleForm(
-                      scrollController: scrollController,
-                    )),
-            child: CircleAvatar(
-              backgroundColor: Colors.grey,
-              child: Text(
-                '+',
-                style: CupertinoTheme.of(context)
-                    .textTheme
-                    .textStyle
-                    .copyWith(fontWeight: FontWeight.w400, fontSize: 30),
-              ),
-              radius: 40,
-            ),
-          ),
-        ],
+                )
+              : Container(
+                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  child: CircleAvatar(
+                      backgroundColor: _backgroundColors[Random().nextInt(3)],
+                      radius: 40,
+                      child: FittedBox(
+                        fit: BoxFit.fitHeight,
+                        child: Text(
+                          '${vehicleModel.vehicles[index].make}\n${vehicleModel.vehicles[index].model}',
+                          style: CupertinoTheme.of(context)
+                              .textTheme
+                              .textStyle
+                              .copyWith(
+                                  fontWeight: FontWeight.w400, fontSize: 15),
+                        ),
+                      )),
+                );
+        },
       ),
+      // child: ListView(
+      //   scrollDirection: Axis.horizontal,
+      //   children: [
+      //     Container(
+      //       padding: EdgeInsets.symmetric(horizontal: 15),
+      //       child: CircleAvatar(
+      //           backgroundColor: _backgroundColors[Random().nextInt(3)],
+      //           radius: 40,
+      //           child: FittedBox(
+      //             fit: BoxFit.fitHeight,
+      //             child: Text(
+      //               'DC',
+      //               style: CupertinoTheme.of(context)
+      //                   .textTheme
+      //                   .textStyle
+      //                   .copyWith(fontWeight: FontWeight.w400, fontSize: 30),
+      //             ),
+      //           )),
+      //     ),
+      // GestureDetector(
+      //   onTap: () => showCupertinoModalBottomSheet(
+      //       expand: true,
+      //       context: context,
+      //       backgroundColor: Colors.transparent,
+      //       builder: (context, scrollController) => AddVehicleForm(
+      //             scrollController: scrollController,
+      //           )),
+      //   child: CircleAvatar(
+      //     backgroundColor: Colors.grey,
+      //     child: Text(
+      //       '+',
+      //       style: CupertinoTheme.of(context)
+      //           .textTheme
+      //           .textStyle
+      //           .copyWith(fontWeight: FontWeight.w400, fontSize: 30),
+      //     ),
+      //     radius: 40,
+      //   ),
+      // ),
+      //   ],
+      // ),
     );
   }
 
