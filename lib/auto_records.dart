@@ -13,10 +13,17 @@ class AutoRecords extends StatefulWidget {
 }
 
 class _AutoRecordsState extends State<AutoRecords> {
+  VehicleModel vehicleModel = VehicleModel();
   double _displayVehicles = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    vehicleModel.initVehicles();
+  }
+
   Widget _vehicleSelection(BuildContext context) {
-    final vehicleModel = Provider.of<VehicleModel>(context);
+    // final vehicleModel = Provider.of<VehicleModel>(context);
     List _backgroundColors = [
       Color.fromRGBO(230, 25, 75, 1),
       Color.fromRGBO(0, 128, 128, 1),

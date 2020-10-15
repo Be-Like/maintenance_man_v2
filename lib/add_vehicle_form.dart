@@ -36,7 +36,6 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
         vehicleTrim: _trim.text,
         mileage: int.parse(_mileage.text));
 
-    print(vehicle.toString());
     VehicleModel vehicleModel =
         Provider.of<VehicleModel>(context, listen: false);
     vehicleModel.add(vehicle);
