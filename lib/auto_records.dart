@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:maintenance_man_v2/add_vehicle_form.dart';
 import 'package:maintenance_man_v2/vehicle_model.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:provider/provider.dart';
 
 class AutoRecords extends StatefulWidget {
   @override
@@ -23,7 +22,6 @@ class _AutoRecordsState extends State<AutoRecords> {
   }
 
   Widget _vehicleSelection(BuildContext context) {
-    // final vehicleModel = Provider.of<VehicleModel>(context);
     List _backgroundColors = [
       Color.fromRGBO(230, 25, 75, 1),
       Color.fromRGBO(0, 128, 128, 1),
