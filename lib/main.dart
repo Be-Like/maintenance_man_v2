@@ -1,34 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:maintenance_man_v2/app_database.dart';
-import 'package:maintenance_man_v2/auto_records.dart';
-import 'package:maintenance_man_v2/vehicle_model.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:maintenance_man_v2/providers/vehicles.dart';
+import 'package:maintenance_man_v2/screens/auth_screen.dart';
+import 'package:maintenance_man_v2/screens/vehicle_records_screen.dart';
 import 'package:provider/provider.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await AppDatabase.init();
-  runApp(MyApp());
-}
+void main() => runApp(MyApp());
 
+// Themes available at: https://coolors.co/404e5c-4f6272-f8f1ff-57755b-7bd389
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => VehicleModel(),
+          create: (ctx) => Vehicles(),
         ),
       ],
       child: MaterialApp(
-        // onGenerateRoute: (RouteSettings settings) {
-        //   switch (settings.name) {
-        //     case '/':
-        //       return MaterialWithModalsPageRoute(
-        //           builder: (_) => AutoRecords(), settings: settings);
-        //   }
-        // },
-        routes: {'/': (context) => AutoRecords()},
+        title: 'Maintenance Man',
+        theme: ThemeData(
+          primaryColor: Color.fromRGBO(64, 78, 92, 1),
+        ),
+        home: VehicleRecordsScreen(),
+        routes: {},
       ),
     );
   }
