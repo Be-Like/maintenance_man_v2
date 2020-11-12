@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:maintenance_man_v2/custom_components/custom_color_theme.dart';
 import 'package:maintenance_man_v2/providers/vehicles.dart';
 import 'package:maintenance_man_v2/screens/auth_screen.dart';
 import 'package:maintenance_man_v2/screens/vehicle_records_screen.dart';
@@ -19,7 +20,11 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Maintenance Man',
         theme: ThemeData(
-          primaryColor: Color.fromRGBO(64, 78, 92, 1),
+          primarySwatch: CustomColorTheme().customColor(),
+          // primaryColorDark: Color.fromRGBO(64, 78, 92, 1),
+          // primaryColorLight: Color.fromRGBO(79, 98, 114, 1),
+          // accentColor: Color.fromRGBO(123, 211, 137, 1),
+          // backgroundColor: Color.fromRGBO(248, 241, 255, 1),
         ),
         home: VehicleRecordsScreen(),
         routes: {},
