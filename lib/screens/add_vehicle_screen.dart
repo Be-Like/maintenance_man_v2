@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:maintenance_man_v2/providers/vehicles.dart';
@@ -70,7 +71,15 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     if (_vehicle.color == null) _vehicle.color = Color(0xFF7bd389);
     _form.currentState.save();
     Provider.of<Vehicles>(context, listen: false).addVehicle(_vehicle);
-    Navigator.of(context).pop();
+    FirebaseFirestore.instance.collection('vehicles').add({
+      'year': _vehicle.year,
+      'make': _vehicle.make,
+      'model': _vehicle.model,
+      'trim': _vehicle.vehicleTrim,
+      'mileage': _vehicle.mileage,
+      'color': _vehicle.color.value,
+    });
+    // Navigator.of(context).pop();
   }
 
   @override
