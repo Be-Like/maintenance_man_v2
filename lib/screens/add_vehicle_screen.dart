@@ -79,7 +79,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
       'mileage': _vehicle.mileage,
       'color': _vehicle.color.value,
     });
-    // Navigator.of(context).pop();
+    Navigator.of(context).pop();
   }
 
   @override
