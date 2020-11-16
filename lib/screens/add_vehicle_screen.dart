@@ -7,12 +7,11 @@ import 'package:provider/provider.dart';
 
 class AddVehicleScreen extends StatefulWidget {
   static const routeName = '/add-vehicle';
-  ScrollController scrollController;
   String vehicleId;
 
-  AddVehicleScreen(ScrollController scrollController);
+  AddVehicleScreen();
 
-  AddVehicleScreen.editVehicle(this.scrollController, this.vehicleId);
+  AddVehicleScreen.editVehicle(this.vehicleId);
 
   @override
   _AddVehicleScreenState createState() => _AddVehicleScreenState();
@@ -88,7 +87,6 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
             appBar: appBar(context),
             body: CustomScrollView(
               physics: ClampingScrollPhysics(),
-              controller: widget.scrollController,
               slivers: <Widget>[
                 SliverSafeArea(
                   bottom: false,

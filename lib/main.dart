@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:maintenance_man_v2/custom_components/custom_color_theme.dart';
 import 'package:maintenance_man_v2/providers/vehicles.dart';
-import 'package:maintenance_man_v2/screens/auth_screen.dart';
+// import 'package:maintenance_man_v2/screens/auth_screen.dart';
 import 'package:maintenance_man_v2/screens/vehicle_records_screen.dart';
 import 'package:provider/provider.dart';
 

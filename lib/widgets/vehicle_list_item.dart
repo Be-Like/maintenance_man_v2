@@ -24,8 +24,8 @@ class VehicleListItem extends StatelessWidget {
           expand: true,
           context: context,
           backgroundColor: Colors.transparent,
-          builder: (ctx, scrollController) {
-            return AddVehicleScreen.editVehicle(scrollController, vehicle.id);
+          builder: (ctx) {
+            return AddVehicleScreen.editVehicle(vehicle.id);
           },
         );
       },

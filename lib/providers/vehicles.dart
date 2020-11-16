@@ -49,15 +49,6 @@ class Vehicles with ChangeNotifier {
   Future<void> initializeVehicles() async {
     _vehicles = [
       Vehicle(
-        id: '1',
-        year: 2011,
-        make: 'Toyota',
-        model: 'Camry',
-        vehicleTrim: 'LE',
-        mileage: 196000,
-        color: Colors.blue,
-      ),
-      Vehicle(
         id: '2',
         year: 2017,
         make: 'Dodge',
@@ -65,6 +56,15 @@ class Vehicles with ChangeNotifier {
         vehicleTrim: 'SXT',
         mileage: 46000,
         color: Colors.red,
+      ),
+      Vehicle(
+        id: '1',
+        year: 2011,
+        make: 'Toyota',
+        model: 'Camry',
+        vehicleTrim: 'LE',
+        mileage: 196000,
+        color: Colors.blue,
       ),
       Vehicle(
         id: '3',
@@ -76,7 +76,7 @@ class Vehicles with ChangeNotifier {
         color: Colors.black45,
       ),
     ];
-    selectVehicle(_vehicles[0].id);
+    _selectedVehicle = _vehicles[0];
   }
 
   void selectVehicle(String vehicleId) {

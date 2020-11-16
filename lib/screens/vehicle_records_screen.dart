@@ -5,27 +5,47 @@ import 'package:maintenance_man_v2/widgets/app_drawer.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
-class VehicleRecordsScreen extends StatelessWidget {
-  Future<void> _initVehiclesAndRecords(BuildContext context) async {
-    await Provider.of<Vehicles>(context).initializeVehicles();
-    // await Provider.of<Vehicles>(context).initializeVehicleRecords();
+class VehicleRecordsScreen extends StatefulWidget {
+  @override
+  _VehicleRecordsScreenState createState() => _VehicleRecordsScreenState();
+}
+
+class _VehicleRecordsScreenState extends State<VehicleRecordsScreen> {
+  var _isLoading = false;
+  var _isInit = true;
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<Vehicles>(context).initializeVehicles().then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-    var data = Provider.of<Vehicles>(context).selectedVehicle;
     return Scaffold(
       drawer: AppDrawer(),
       appBar: AppBar(
         title: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Text('Vehicles'),
-            Text(
-              '${data.vehicleName()}',
-              style: const TextStyle(
-                fontSize: 14,
+            Consumer<Vehicles>(
+              builder: (ctx, vehiclesData, _) => Text(
+                '${vehiclesData.selectedVehicle.vehicleName()}',
+                style: const TextStyle(
+                  fontSize: 14,
+                ),
               ),
             ),
           ],
@@ -46,17 +66,13 @@ class VehicleRecordsScreen extends StatelessWidget {
           )
         ],
       ),
-      body: FutureBuilder(
-        future: _initVehiclesAndRecords(context),
-        builder: (ctx, snapshot) =>
-            snapshot.connectionState == ConnectionState.waiting
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : Center(
-                    child: Text('Hello records list'),
-                  ),
-      ),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Center(
+              child: Text('Hello records list'),
+            ),
     );
   }
 }
