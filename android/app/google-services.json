@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "858979543766",
+    "firebase_url": "https://maintenanceman-ef1e3.firebaseio.com",
+    "project_id": "maintenanceman-ef1e3",
+    "storage_bucket": "maintenanceman-ef1e3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:858979543766:android:dbc61b009ad0c13d97f777",
+        "android_client_info": {
+          "package_name": "com.example.maintenance_man_v2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "858979543766-760c18k8qujir9kkqarqr132e6l6arc3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCktothEW3iqfSUoHWrSnhP3MO4hqtWuJE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "858979543766-760c18k8qujir9kkqarqr132e6l6arc3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "858979543766-4ooslfsmnnot05me2f37chrlk3qffhq0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.maintenanceManV2"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
