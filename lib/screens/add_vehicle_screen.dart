@@ -8,9 +8,9 @@ import 'package:provider/provider.dart';
 
 class AddVehicleScreen extends StatefulWidget {
   static const routeName = '/add-vehicle';
-  String vehicleId;
+  final String vehicleId;
 
-  AddVehicleScreen();
+  AddVehicleScreen() : vehicleId = null;
 
   AddVehicleScreen.editVehicle(this.vehicleId);
 
@@ -37,6 +37,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     vehicleTrim: '',
     mileage: null,
     color: null,
+    imageUrl: null,
   );
   var _initValues = {
     'year': '',
@@ -48,7 +49,18 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
 
   @override
   void didChangeDependencies() {
-    if (_isInit) {}
+    if (_isInit) {
+      if (widget.vehicleId != null) {
+        _vehicle = Provider.of<Vehicles>(context).findById(widget.vehicleId);
+        _initValues = {
+          'year': _vehicle.year.toString(),
+          'make': _vehicle.make,
+          'model': _vehicle.model,
+          'trim': _vehicle.vehicleTrim,
+          'mileage': _vehicle.mileage.toString(),
+        };
+      }
+    }
     _isInit = false;
     super.didChangeDependencies();
   }
@@ -70,16 +82,32 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     if (_vehicle.mileage == null) _vehicle.mileage = 0;
     if (_vehicle.color == null) _vehicle.color = Color(0xFF7bd389);
     _form.currentState.save();
-    Provider.of<Vehicles>(context, listen: false).addVehicle(_vehicle);
-    FirebaseFirestore.instance.collection('vehicles').add({
-      'year': _vehicle.year,
-      'make': _vehicle.make,
-      'model': _vehicle.model,
-      'trim': _vehicle.vehicleTrim,
-      'mileage': _vehicle.mileage,
-      'color': _vehicle.color.value,
-    });
-    Navigator.of(context).pop();
+    if (widget.vehicleId != null) {
+      try {
+        await Provider.of<Vehicles>(context, listen: false)
+            .updateVehicle(widget.vehicleId, _vehicle);
+        Navigator.of(context).pop('${_vehicle.vehicleName()} updated');
+      } catch (err) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to update vehicle information'),
+          ),
+        );
+      }
+    } else {
+      try {
+        await Provider.of<Vehicles>(context, listen: false)
+            .addVehicle(_vehicle);
+        Navigator.of(context)
+            .pop('${_vehicle.vehicleName()} successfully added');
+      } catch (err) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to add vehicle'),
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -150,7 +178,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
               ),
               CupertinoButton(
                 child: Text(
-                  'Add',
+                  'Save',
                   style: CupertinoTheme.of(context)
                       .textTheme
                       .textStyle

@@ -41,12 +41,15 @@ class _VehicleRecordsScreenState extends State<VehicleRecordsScreen> {
           children: [
             const Text('Vehicles'),
             Consumer<Vehicles>(
-              builder: (ctx, vehiclesData, _) => Text(
-                '${vehiclesData.selectedVehicle.vehicleName()}',
-                style: const TextStyle(
-                  fontSize: 14,
-                ),
-              ),
+              builder: (ctx, vehiclesData, _) =>
+                  vehiclesData.selectedVehicle == null
+                      ? Container()
+                      : Text(
+                          '${vehiclesData.selectedVehicle.vehicleName()}',
+                          style: const TextStyle(
+                            fontSize: 14,
+                          ),
+                        ),
             ),
           ],
         ),

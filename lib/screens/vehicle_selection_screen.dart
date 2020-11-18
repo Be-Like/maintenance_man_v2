@@ -26,10 +26,16 @@ class VehicleSelectionScreen extends StatelessWidget {
                 context: context,
                 backgroundColor: Colors.transparent,
                 builder: (context) => AddVehicleScreen(),
-                // builder: (ctx, scrollController) {
-                //   return AddVehicleScreen(scrollController);
-                // },
-              );
+              ).then((value) {
+                if (value == null) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(value),
+                    duration: Duration(seconds: 2),
+                    backgroundColor: Color(0xFF7BD389),
+                  ),
+                );
+              });
             },
           )
         ],

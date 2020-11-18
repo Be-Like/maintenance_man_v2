@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:maintenance_man_v2/providers/vehicles.dart'
     show Vehicle, Vehicles;
 import 'package:maintenance_man_v2/screens/add_vehicle_screen.dart';
+import 'package:maintenance_man_v2/screens/vehicle_info_screen.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
@@ -19,15 +20,20 @@ class VehicleListItem extends StatelessWidget {
         Provider.of<Vehicles>(context, listen: false).selectVehicle(vehicle.id);
         Navigator.of(context).pop();
       },
-      onLongPress: () {
-        showCupertinoModalBottomSheet(
-          expand: true,
-          context: context,
-          backgroundColor: Colors.transparent,
-          builder: (ctx) {
-            return AddVehicleScreen.editVehicle(vehicle.id);
-          },
+      onLongPress: () async {
+        final res = await Navigator.of(context).push(
+          MaterialWithModalsPageRoute(
+            fullscreenDialog: true,
+            builder: (ctx) => VehicleInfoScreen(vehicle.id),
+          ),
         );
+        if (res['deleted']) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Vehicle successfully deleted'),
+            duration: Duration(seconds: 2),
+            backgroundColor: Colors.red,
+          ));
+        }
       },
       child: Column(
         children: [
