@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:maintenance_man_v2/providers/service_records.dart';
 import 'package:maintenance_man_v2/providers/vehicles.dart';
+import 'package:maintenance_man_v2/screens/add_record_screen.dart';
 import 'package:maintenance_man_v2/screens/vehicle_selection_screen.dart';
 import 'package:maintenance_man_v2/widgets/app_drawer.dart';
+import 'package:maintenance_man_v2/widgets/service_record_list_item.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
@@ -73,9 +76,69 @@ class _VehicleRecordsScreenState extends State<VehicleRecordsScreen> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : Center(
-              child: Text('Hello records list'),
+          : Consumer<Vehicles>(
+              builder: (ctx, vehiclesData, _) => FutureBuilder(
+                future: Provider.of<ServiceRecords>(ctx, listen: false)
+                    .initializeRecords(vehiclesData.selectedVehicle.id),
+                builder: (cnx, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else {
+                    if (snapshot.error != null) {
+                      return Center(
+                        child: Text('An error occurred'),
+                      );
+                    } else {
+                      return Consumer<ServiceRecords>(
+                        builder: (context, serviceRecords, _) =>
+                            serviceRecords.records.length == 0
+                                ? Center(
+                                    child: Text(
+                                        'No records exist for this vehicle'),
+                                  )
+                                : ListView.builder(
+                                    itemCount: serviceRecords.records.length,
+                                    itemBuilder: (context, index) =>
+                                        ServiceRecordListItem(
+                                      serviceRecords.records[index],
+                                    ),
+                                  ),
+                      );
+                    }
+                  }
+                },
+              ),
             ),
+      floatingActionButton: Consumer<Vehicles>(
+        builder: (ctx, vehicleData, _) => FloatingActionButton(
+          child: Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
+          splashColor: Theme.of(context).accentColor,
+          backgroundColor: Theme.of(context).primaryColorDark,
+          onPressed: () async {
+            final res = await showCupertinoModalBottomSheet(
+              expand: true,
+              context: context,
+              builder: (ctx) => AddRecordScreen(
+                recordType: 'Vehicle',
+                recordTypeId: vehicleData.selectedVehicle.id,
+              ),
+            );
+            if (res != null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(res),
+                  backgroundColor: Theme.of(context).accentColor,
+                ),
+              );
+            }
+          },
+        ),
+      ),
     );
   }
 }

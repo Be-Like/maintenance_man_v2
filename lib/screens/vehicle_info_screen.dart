@@ -40,10 +40,35 @@ class VehicleInfoScreen extends StatelessWidget {
                 ),
                 IconButton(
                   icon: Icon(Icons.delete),
-                  onPressed: () {
-                    Provider.of<Vehicles>(context, listen: false)
-                        .deleteVehicle(vehicleId);
-                    Navigator.of(context).pop({'deleted': true});
+                  onPressed: () async {
+                    final res = await showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: Text('Delete vehicle?'),
+                        content: Text(
+                          'Are you sure you want to delete ${vehicle.vehicleName()}? This action is permanent.',
+                        ),
+                        actions: <Widget>[
+                          FlatButton(
+                            child: Text('No'),
+                            onPressed: () {
+                              Navigator.of(context).pop(false);
+                            },
+                          ),
+                          FlatButton(
+                            child: Text('Yes'),
+                            onPressed: () {
+                              Navigator.of(context).pop(true);
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                    if (res != null && res) {
+                      Provider.of<Vehicles>(context, listen: false)
+                          .deleteVehicle(vehicleId);
+                      Navigator.of(context).pop({'deleted': true});
+                    }
                   },
                 ),
               ],

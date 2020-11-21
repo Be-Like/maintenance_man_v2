@@ -27,12 +27,14 @@ class VehicleListItem extends StatelessWidget {
             builder: (ctx) => VehicleInfoScreen(vehicle.id),
           ),
         );
-        if (res['deleted']) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('Vehicle successfully deleted'),
-            duration: Duration(seconds: 2),
-            backgroundColor: Colors.red,
-          ));
+        if (res != null && res['deleted']) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Vehicle successfully deleted'),
+              duration: Duration(seconds: 2),
+              backgroundColor: Colors.red,
+            ),
+          );
         }
       },
       child: Column(

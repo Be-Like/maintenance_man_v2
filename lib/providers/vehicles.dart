@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:maintenance_man_v2/providers/service_records.dart';
 
 class Vehicle {
   String id;
@@ -87,11 +88,13 @@ class Vehicles with ChangeNotifier {
       );
     });
     _selectedVehicle = _vehicles[0];
+    ServiceRecords().initializeRecords(_selectedVehicle.id);
+    notifyListeners();
   }
 
   void selectVehicle(String vehicleId) {
     _selectedVehicle = _vehicles.firstWhere((el) => el.id == vehicleId);
-    print('Selected Vehicle: ${_selectedVehicle.toString()}');
+    ServiceRecords().initializeRecords(_selectedVehicle.id);
     notifyListeners();
   }
 
@@ -147,6 +150,9 @@ class Vehicles with ChangeNotifier {
   }
 
   void deleteVehicle(String vehicleId) {
+    if (_selectedVehicle.id == vehicleId) {
+      _selectedVehicle = _vehicles.firstWhere((el) => el.id != vehicleId);
+    }
     _vehicles.removeWhere((el) => el.id == vehicleId);
     FirebaseFirestore.instance.collection('vehicles').doc(vehicleId).delete();
     notifyListeners();
