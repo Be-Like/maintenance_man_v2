@@ -51,13 +51,15 @@ class ServiceRecordInfoScreen extends StatelessWidget {
               ],
               flexibleSpace: FlexibleSpaceBar(
                 title: Text(_serviceRecord.name),
-                background: Hero(
-                  tag: _serviceRecord.id,
-                  child: Image.network(
-                    _serviceRecord.imageUrl,
-                    fit: BoxFit.cover,
-                  ),
-                ),
+                background: _hasImage
+                    ? Hero(
+                        tag: _serviceRecord.id,
+                        child: Image.network(
+                          _serviceRecord.imageUrl,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : null,
               ),
             ),
             SliverList(
