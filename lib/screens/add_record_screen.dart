@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:maintenance_man_v2/providers/service_records.dart';
 import 'package:provider/provider.dart';
 
@@ -27,6 +28,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
   final _form = GlobalKey<FormState>();
   final _recordNameFocusNode = FocusNode();
   final _dateFormField = TextEditingController();
+  final _formattedDate = DateFormat.yMd();
   final _dateOfServiceFocusNode = FocusNode();
   final _costFocusNode = FocusNode();
   final _descriptionFocusNode = FocusNode();
@@ -56,6 +58,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
     super.initState();
     _record.type = widget.recordType;
     _record.typeId = widget.recordTypeId;
+    _dateFormField.text = _formattedDate.format(DateTime.now());
   }
 
   @override
@@ -251,7 +254,6 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
               TextField(
                 controller: _dateFormField,
                 focusNode: _dateOfServiceFocusNode,
-                // initialValue: _initValues['dateOfService'],
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.phone,
                 maxLines: 1,
@@ -274,7 +276,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                   );
                   if (picked != null) {
                     _record.dateOfService = picked;
-                    _dateFormField.text = picked.toString();
+                    _dateFormField.text = _formattedDate.format(picked);
                   }
                   FocusScope.of(context).requestFocus(new FocusNode());
                 },
