@@ -18,7 +18,7 @@ class ServiceRecord {
     @required this.id,
     @required this.name,
     @required this.dateOfService,
-    @required String type,
+    @required this.type,
     @required this.typeId,
     this.cost,
     this.description,

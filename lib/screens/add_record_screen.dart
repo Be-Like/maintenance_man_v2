@@ -28,7 +28,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
   final _form = GlobalKey<FormState>();
   final _recordNameFocusNode = FocusNode();
   final _dateFormField = TextEditingController();
-  final _formattedDate = DateFormat.yMd();
+  final _formattedDate = DateFormat.yMMMd();
   final _dateOfServiceFocusNode = FocusNode();
   final _costFocusNode = FocusNode();
   final _descriptionFocusNode = FocusNode();
@@ -84,6 +84,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
   void dispose() {
     _recordNameFocusNode.dispose();
     _dateOfServiceFocusNode.dispose();
+    _dateFormField.dispose();
     _costFocusNode.dispose();
     _descriptionFocusNode.dispose();
     _locationFocusNode.dispose();
@@ -254,8 +255,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
               TextField(
                 controller: _dateFormField,
                 focusNode: _dateOfServiceFocusNode,
-                textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.phone,
+                readOnly: true,
                 maxLines: 1,
                 autocorrect: false,
                 onEditingComplete: () =>
@@ -263,8 +263,10 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                 decoration: InputDecoration(
                   labelText: 'Date of Service',
                   icon: const Icon(Icons.calendar_today),
-                  labelStyle:
-                      TextStyle(decorationStyle: TextDecorationStyle.solid),
+                  labelStyle: TextStyle(
+                    decorationStyle: TextDecorationStyle.solid,
+                  ),
+                  errorText: _record.dateOfService == null ? _required : null,
                 ),
                 onTap: () async {
                   final currentDate = DateTime.now();
@@ -280,8 +282,6 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                   }
                   FocusScope.of(context).requestFocus(new FocusNode());
                 },
-                // validator: (value) => value.isEmpty ? _required : null,
-                // onSaved: (value) => _record.dateOfService = DateTime.now(),
               ),
               TextFormField(
                 focusNode: _descriptionFocusNode,
