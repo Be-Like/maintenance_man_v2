@@ -48,6 +48,8 @@ class ServiceRecord {
 }
 
 class ServiceRecords with ChangeNotifier {
+  static const _recordsCollection = 'service_records';
+
   List<ServiceRecord> _records = [];
 
   List<ServiceRecord> get records => [..._records];
@@ -55,7 +57,7 @@ class ServiceRecords with ChangeNotifier {
   Future<void> initializeRecords(String recordTypeId) async {
     _records = [];
     final query = await FirebaseFirestore.instance
-        .collection('service_records')
+        .collection(_recordsCollection)
         .orderBy('createdAt', descending: true)
         .where('typeId', isEqualTo: recordTypeId)
         .get();
@@ -96,7 +98,7 @@ class ServiceRecords with ChangeNotifier {
 
   Future<void> addRecord(ServiceRecord record) async {
     var response =
-        await FirebaseFirestore.instance.collection('service_records').add({
+        await FirebaseFirestore.instance.collection(_recordsCollection).add({
       'name': record.name,
       'dateOfService': record.dateOfService,
       'description': record.description,
@@ -113,5 +115,65 @@ class ServiceRecords with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateRecord(ServiceRecord record) async {}
+  Future<void> updateRecord(ServiceRecord record) async {
+    final recordIndex = _records.indexWhere((el) => el.id == record.id);
+    if (recordIndex >= 0) {
+      try {
+        record.updatedAt = DateTime.now();
+        await FirebaseFirestore.instance
+            .collection(_recordsCollection)
+            .doc(record.id)
+            .update({
+          'name': record.name,
+          'dateOfService': record.dateOfService,
+          'description': record.description,
+          'cost': record.cost,
+          'location': record.location,
+          'imageUrl': record.imageUrl,
+          'type': record.type,
+          'typeId': record.typeId,
+          'createdAt': record.createdAt,
+          'updatedAt': record.updatedAt,
+        });
+        _records[recordIndex] = record;
+        notifyListeners();
+      } catch (err) {
+        throw err;
+      }
+    } else {
+      throw Error;
+    }
+  }
+
+  void deleteRecord(String recordId) {
+    FirebaseFirestore.instance
+        .collection(_recordsCollection)
+        .doc(recordId)
+        .delete();
+    _records.removeWhere((el) => el.id == recordId);
+    notifyListeners();
+  }
+
+  int getIndex(String recordId) =>
+      _records.indexWhere((el) => el.id == recordId);
+
+  Future<void> undoDelete(int recordIndex, ServiceRecord record) async {
+    _records.insert(recordIndex, record);
+    await FirebaseFirestore.instance
+        .collection(_recordsCollection)
+        .doc(record.id)
+        .set({
+      'name': record.name,
+      'dateOfService': record.dateOfService,
+      'description': record.description,
+      'cost': record.cost,
+      'location': record.location,
+      'imageUrl': record.imageUrl,
+      'type': record.type,
+      'typeId': record.typeId,
+      'createdAt': record.createdAt,
+      'updatedAt': record.updatedAt,
+    });
+    notifyListeners();
+  }
 }

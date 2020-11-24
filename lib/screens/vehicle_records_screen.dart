@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:maintenance_man_v2/providers/service_records.dart';
 import 'package:maintenance_man_v2/providers/vehicles.dart';
@@ -40,7 +42,9 @@ class _VehicleRecordsScreenState extends State<VehicleRecordsScreen> {
       appBar: AppBar(
         title: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: Platform.isIOS
+              ? CrossAxisAlignment.center
+              : CrossAxisAlignment.start,
           children: [
             const Text('Vehicles'),
             Consumer<Vehicles>(
@@ -98,7 +102,8 @@ class _VehicleRecordsScreenState extends State<VehicleRecordsScreen> {
                                     child: Text(
                                         'No records exist for this vehicle'),
                                   )
-                                : ListView.builder(
+                                : ListView.separated(
+                                    separatorBuilder: (ctx, index) => Divider(),
                                     itemCount: serviceRecords.records.length,
                                     itemBuilder: (context, index) =>
                                         ServiceRecordListItem(

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:maintenance_man_v2/providers/service_records.dart';
 import 'package:maintenance_man_v2/providers/vehicles.dart';
+import 'package:maintenance_man_v2/screens/add_record_screen.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 class ServiceRecordInfoScreen extends StatelessWidget {
@@ -42,11 +44,51 @@ class ServiceRecordInfoScreen extends StatelessWidget {
               actions: [
                 IconButton(
                   icon: Icon(Icons.edit),
-                  onPressed: () {},
+                  onPressed: () async {
+                    final res = await showCupertinoModalBottomSheet(
+                      context: context,
+                      builder: (ctx) => AddRecordScreen.editRecord(
+                        recordId: _serviceRecord.id,
+                        recordType: _serviceRecord.type,
+                        recordTypeId: _serviceRecord.typeId,
+                      ),
+                    );
+                    if (res == null) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(res),
+                        backgroundColor: Theme.of(context).accentColor,
+                      ),
+                    );
+                  },
                 ),
                 IconButton(
                   icon: Icon(Icons.delete),
-                  onPressed: () {},
+                  onPressed: () async {
+                    final res = await showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: Text('Delete service record?'),
+                        content: Text(
+                          'Are you sure you want to delete ${_serviceRecord.name} for ${_recordVehicle.vehicleName()}?',
+                        ),
+                        actions: [
+                          FlatButton(
+                            child: Text('No'),
+                            onPressed: () => Navigator.of(context).pop(false),
+                          ),
+                          FlatButton(
+                            child: Text('Yes'),
+                            onPressed: () => Navigator.of(context).pop(true),
+                          ),
+                        ],
+                      ),
+                    );
+                    if (res == null || !res) return;
+                    Provider.of<ServiceRecords>(context, listen: false)
+                        .deleteRecord(_serviceRecord.id);
+                    Navigator.of(context).pop({'deleted': true});
+                  },
                 ),
               ],
               flexibleSpace: FlexibleSpaceBar(
