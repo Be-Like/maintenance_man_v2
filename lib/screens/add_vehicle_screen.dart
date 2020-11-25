@@ -1,11 +1,14 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:maintenance_man_v2/providers/vehicles.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class AddVehicleScreen extends StatefulWidget {
   static const routeName = '/add-vehicle';
@@ -21,6 +24,8 @@ class AddVehicleScreen extends StatefulWidget {
 
 class _AddVehicleScreenState extends State<AddVehicleScreen> {
   var _isInit = true;
+  final _picker = ImagePicker();
+  final _storage = firebase_storage.FirebaseStorage.instance;
 
   static const _required = 'This field is required';
   final _form = GlobalKey<FormState>();
@@ -212,7 +217,39 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
           child: Column(
             children: <Widget>[
               GestureDetector(
-                onTap: () {
+                onTap: () async {
+                  final dialogResponse = await showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: Text('Vehicle Image'),
+                      content: Text(
+                        'Would you like to take an image or choose from your gallery?',
+                      ),
+                      actions: [
+                        FlatButton(
+                          child: Text('Gallery'),
+                          onPressed: () =>
+                              Navigator.of(context).pop(ImageSource.gallery),
+                        ),
+                        FlatButton(
+                          child: Text('Camera'),
+                          onPressed: () =>
+                              Navigator.of(context).pop(ImageSource.camera),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (dialogResponse == null) return;
+                  PickedFile image =
+                      await _picker.getImage(source: dialogResponse);
+                  if (image == null) return;
+                  // TODO: figure out a good way of naming the image files
+                  // var ref = _storage.ref();
+                  // var testing = ref.putFile(File(image.path));
+                  // testing.whenComplete(() async {
+                  //   var dddd = await ref.getDownloadURL();
+                  //   print(dddd);
+                  // });
                   _vehicle.imageUrl =
                       'https://s1.cdn.autoevolution.com/images/news-pictures-600x/harley-davidson-gives-up-on-india-149280-7.jpg';
                   setState(() {});
