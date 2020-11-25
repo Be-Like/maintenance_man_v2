@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:maintenance_man_v2/providers/service_records.dart';
 
 class Vehicle {
+  static const defaultImage =
+      'https://cdn.shopify.com/s/files/1/1252/4103/files/Banner_Slide_1.jpg?8011495818817229397';
   String id;
   int year;
   String make;
@@ -25,8 +27,7 @@ class Vehicle {
     String imageUrl,
     DateTime createdAt,
     DateTime updatedAt,
-  })  : imageUrl = imageUrl ??
-            'https://cdn.shopify.com/s/files/1/1252/4103/files/Banner_Slide_1.jpg?8011495818817229397',
+  })  : imageUrl = imageUrl ?? defaultImage,
         createdAt = createdAt ?? DateTime.now(),
         updatedAt = updatedAt ?? DateTime.now();
 

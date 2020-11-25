@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:maintenance_man_v2/providers/vehicles.dart';
 import 'package:provider/provider.dart';
 
@@ -29,6 +30,8 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   final _trimFocusNode = FocusNode();
   final _mileageFocusNode = FocusNode();
 
+  final _colorController = TextEditingController();
+
   var _vehicle = Vehicle(
     id: DateTime.now().toString(),
     year: null,
@@ -36,7 +39,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     model: '',
     vehicleTrim: '',
     mileage: null,
-    color: null,
+    color: Color(0xFF7bd389),
     imageUrl: null,
   );
   var _initValues = {
@@ -46,6 +49,12 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     'trim': '',
     'mileage': '',
   };
+
+  @override
+  void initState() {
+    super.initState();
+    _colorController.text = _vehicle.color.toString();
+  }
 
   @override
   void didChangeDependencies() {
@@ -72,6 +81,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     _modelFocusNode.dispose();
     _trimFocusNode.dispose();
     _mileageFocusNode.dispose();
+    _colorController.dispose();
     super.dispose();
   }
 
@@ -201,6 +211,31 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
           key: _form,
           child: Column(
             children: <Widget>[
+              GestureDetector(
+                onTap: () {
+                  _vehicle.imageUrl =
+                      'https://s1.cdn.autoevolution.com/images/news-pictures-600x/harley-davidson-gives-up-on-india-149280-7.jpg';
+                  setState(() {});
+                },
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Image.network(
+                      _vehicle.imageUrl,
+                      fit: BoxFit.cover,
+                      color: _vehicle.imageUrl == Vehicle.defaultImage
+                          ? Colors.black.withOpacity(0.3)
+                          : null,
+                      colorBlendMode: BlendMode.srcOver,
+                    ),
+                    if (_vehicle.imageUrl == Vehicle.defaultImage)
+                      Text(
+                        'Add Image',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                  ],
+                ),
+              ),
               TextFormField(
                 focusNode: _yearFocusNode,
                 initialValue: _initValues['year'],
@@ -266,6 +301,43 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                 },
                 onFieldSubmitted: (_) => _submitVehicle(),
               ),
+              TextField(
+                readOnly: true,
+                controller: _colorController,
+                maxLines: 1,
+                autocorrect: false,
+                decoration: InputDecoration(
+                  labelText: 'Color',
+                  icon: CircleAvatar(
+                    backgroundColor: _vehicle.color,
+                  ),
+                ),
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      actions: [
+                        FlatButton(
+                          child: const Text('That\'s Me'),
+                          onPressed: () {
+                            setState(() {});
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                      content: SingleChildScrollView(
+                        child: SlidePicker(
+                          pickerColor: Theme.of(context).accentColor,
+                          onColorChanged: (color) {
+                            _vehicle.color = color;
+                          },
+                          showLabel: false,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              )
             ],
           ),
         ),
