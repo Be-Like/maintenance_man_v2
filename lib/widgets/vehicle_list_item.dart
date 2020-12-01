@@ -42,6 +42,12 @@ class VehicleListItem extends StatelessWidget {
           CircleAvatar(
             backgroundColor: vehicle.color,
             radius: 60,
+            child: CircleAvatar(
+              backgroundImage: vehicle.imageUrl != null
+                  ? NetworkImage(vehicle.imageUrl)
+                  : AssetImage('assets/images/DefaultVehicle.jpg'),
+              radius: 57,
+            ),
           ),
           SizedBox(height: 10),
           Text(vehicleTitle),

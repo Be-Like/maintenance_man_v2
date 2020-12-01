@@ -8,7 +8,6 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:maintenance_man_v2/providers/vehicles.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class AddVehicleScreen extends StatefulWidget {
   static const routeName = '/add-vehicle';
@@ -25,7 +24,7 @@ class AddVehicleScreen extends StatefulWidget {
 class _AddVehicleScreenState extends State<AddVehicleScreen> {
   var _isInit = true;
   final _picker = ImagePicker();
-  final _storage = firebase_storage.FirebaseStorage.instance;
+  File _vehicleImage;
 
   static const _required = 'This field is required';
   final _form = GlobalKey<FormState>();
@@ -100,7 +99,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     if (widget.vehicleId != null) {
       try {
         await Provider.of<Vehicles>(context, listen: false)
-            .updateVehicle(widget.vehicleId, _vehicle);
+            .updateVehicle(widget.vehicleId, _vehicle, _vehicleImage);
         Navigator.of(context).pop('${_vehicle.vehicleName()} updated');
       } catch (err) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -112,7 +111,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     } else {
       try {
         await Provider.of<Vehicles>(context, listen: false)
-            .addVehicle(_vehicle);
+            .addVehicle(_vehicle, _vehicleImage);
         Navigator.of(context)
             .pop('${_vehicle.vehicleName()} successfully added');
       } catch (err) {
@@ -243,29 +242,33 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                   PickedFile image =
                       await _picker.getImage(source: dialogResponse);
                   if (image == null) return;
-                  // TODO: figure out a good way of naming the image files
-                  // var ref = _storage.ref();
-                  // var testing = ref.putFile(File(image.path));
-                  // testing.whenComplete(() async {
-                  //   var dddd = await ref.getDownloadURL();
-                  //   print(dddd);
-                  // });
-                  _vehicle.imageUrl =
-                      'https://s1.cdn.autoevolution.com/images/news-pictures-600x/harley-davidson-gives-up-on-india-149280-7.jpg';
-                  setState(() {});
+                  setState(() {
+                    _vehicleImage = File(image.path);
+                  });
                 },
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    Image.network(
-                      _vehicle.imageUrl,
-                      fit: BoxFit.cover,
-                      color: _vehicle.imageUrl == Vehicle.defaultImage
-                          ? Colors.black.withOpacity(0.3)
-                          : null,
-                      colorBlendMode: BlendMode.srcOver,
-                    ),
-                    if (_vehicle.imageUrl == Vehicle.defaultImage)
+                    if (_vehicleImage != null)
+                      Image.file(
+                        _vehicleImage,
+                        fit: BoxFit.cover,
+                      ),
+                    if (_vehicleImage == null && _vehicle.imageUrl == null)
+                      Image.asset(
+                        'assets/images/DefaultVehicle.jpg',
+                        fit: BoxFit.cover,
+                        color: _vehicle.imageUrl == null
+                            ? Colors.black.withOpacity(0.3)
+                            : null,
+                        colorBlendMode: BlendMode.srcOver,
+                      ),
+                    if (_vehicle.imageUrl != null && _vehicleImage == null)
+                      Image.network(
+                        _vehicle.imageUrl,
+                        fit: BoxFit.cover,
+                      ),
+                    if (_vehicle.imageUrl == null && _vehicleImage == null)
                       Text(
                         'Add Image',
                         style: TextStyle(color: Colors.white),

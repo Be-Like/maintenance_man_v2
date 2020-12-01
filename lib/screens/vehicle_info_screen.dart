@@ -76,10 +76,15 @@ class VehicleInfoScreen extends StatelessWidget {
                 title: Text(vehicle.vehicleName()),
                 background: Hero(
                   tag: vehicle.id,
-                  child: Image.network(
-                    vehicle.imageUrl,
-                    fit: BoxFit.cover,
-                  ),
+                  child: vehicle.imageUrl == null
+                      ? Image.asset(
+                          'assets/images/DefaultVehicle.jpg',
+                          fit: BoxFit.cover,
+                        )
+                      : Image.network(
+                          vehicle.imageUrl,
+                          fit: BoxFit.cover,
+                        ),
                 ),
               ),
             ),

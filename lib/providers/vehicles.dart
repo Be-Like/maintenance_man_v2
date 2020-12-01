@@ -1,10 +1,13 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:maintenance_man_v2/providers/service_records.dart';
 
 class Vehicle {
-  static const defaultImage =
-      'https://firebasestorage.googleapis.com/v0/b/maintenanceman-ef1e3.appspot.com/o/images%2FDefaultVehicle.jpg?alt=media&token=652003a1-3083-454d-9cf3-4a4e38d0c2cc';
+  // static const defaultImage =
+  //     'https://firebasestorage.googleapis.com/v0/b/maintenanceman-ef1e3.appspot.com/o/images%2FDefaultVehicle.jpg?alt=media&token=652003a1-3083-454d-9cf3-4a4e38d0c2cc';
   String id;
   int year;
   String make;
@@ -24,11 +27,10 @@ class Vehicle {
     this.vehicleTrim,
     this.mileage,
     this.color,
-    String imageUrl,
+    this.imageUrl,
     DateTime createdAt,
     DateTime updatedAt,
-  })  : imageUrl = imageUrl ?? defaultImage,
-        createdAt = createdAt ?? DateTime.now(),
+  })  : createdAt = createdAt ?? DateTime.now(),
         updatedAt = updatedAt ?? DateTime.now();
 
   String vehicleName() => '$make $model $vehicleTrim';
@@ -102,8 +104,22 @@ class Vehicles with ChangeNotifier {
   Vehicle findById(String id) =>
       _vehicles.firstWhere((vehicle) => vehicle.id == id);
 
-  Future<void> addVehicle(Vehicle vehicle) async {
-    var response = await FirebaseFirestore.instance.collection('vehicles').add({
+  Future<String> storeAndGetImageUrl(String fileName, File imageFile) async {
+    var ref =
+        FirebaseStorage.instance.ref().child('images').child('$fileName.jpg');
+    await ref.putFile(File(imageFile.path));
+    return ref.getDownloadURL();
+  }
+
+  Future<void> addVehicle(Vehicle vehicle, File image) async {
+    final docRef = FirebaseFirestore.instance.collection('vehicles').doc().id;
+    print(docRef);
+    vehicle.id = docRef;
+    if (image != null) {
+      vehicle.imageUrl = await storeAndGetImageUrl(docRef, image);
+    }
+
+    await FirebaseFirestore.instance.collection('vehicles').doc(docRef).set({
       'year': vehicle.year,
       'make': vehicle.make,
       'model': vehicle.model,
@@ -114,16 +130,22 @@ class Vehicles with ChangeNotifier {
       'createdAt': vehicle.createdAt,
       'updatedAt': vehicle.updatedAt,
     });
-    vehicle.id = response.id;
 
     _vehicles.insert(0, vehicle);
     notifyListeners();
   }
 
-  Future<void> updateVehicle(String vehicleId, Vehicle vehicle) async {
+  Future<void> updateVehicle(
+    String vehicleId,
+    Vehicle vehicle,
+    File image,
+  ) async {
     final vehicleIndex = _vehicles.indexWhere((el) => el.id == vehicleId);
     if (vehicleIndex >= 0) {
       try {
+        if (image != null) {
+          vehicle.imageUrl = await storeAndGetImageUrl(vehicle.id, image);
+        }
         vehicle.updatedAt = DateTime.now();
         await FirebaseFirestore.instance
             .collection('vehicles')
