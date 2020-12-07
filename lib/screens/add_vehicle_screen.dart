@@ -313,14 +313,13 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                 initialValue: _initValues['mileage'],
                 textInputAction: TextInputAction.go,
                 keyboardType: TextInputType.number,
-                onEditingComplete: () =>
-                    FocusScope.of(context).requestFocus(_mileageFocusNode),
+                onEditingComplete: () => FocusScope.of(context).unfocus(),
                 decoration: InputDecoration(labelText: 'Vehicle Mileage'),
                 onSaved: (value) {
                   if (value.isEmpty) return;
                   _vehicle.mileage = int.parse(value);
                 },
-                onFieldSubmitted: (_) => _submitVehicle(),
+                // onFieldSubmitted: (_) => _submitVehicle(),
               ),
               TextField(
                 readOnly: true,
