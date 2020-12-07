@@ -1,9 +1,12 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:maintenance_man_v2/providers/service_records.dart';
+import 'package:maintenance_man_v2/widgets/add_image_dialog.dart';
 import 'package:provider/provider.dart';
 
 class AddRecordScreen extends StatefulWidget {
@@ -33,6 +36,8 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
   final _costFocusNode = FocusNode();
   final _descriptionFocusNode = FocusNode();
   final _locationFocusNode = FocusNode();
+  final _picker = ImagePicker();
+  File _recordImage;
 
   var _record = ServiceRecord(
     id: null,
@@ -99,7 +104,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
     if (widget.recordId != null) {
       try {
         await Provider.of<ServiceRecords>(context, listen: false)
-            .updateRecord(_record);
+            .updateRecord(_record, _recordImage);
         Navigator.of(context).pop('${_record.name} updated');
       } catch (err) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -112,7 +117,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
     } else {
       try {
         await Provider.of<ServiceRecords>(context, listen: false)
-            .addRecord(_record);
+            .addRecord(_record, _recordImage);
         Navigator.of(context).pop('${_record.name} successfully added');
       } catch (err) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -137,6 +142,24 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                 .withOpacity(0.95),
             extendBodyBehindAppBar: true,
             appBar: appBar(context),
+            floatingActionButton: FloatingActionButton.extended(
+              icon: const Icon(Icons.add_a_photo_outlined),
+              label: _record.imageUrl == '' && _recordImage == null
+                  ? const Text('Add Invoice')
+                  : const Text('Edit Invoice'),
+              onPressed: () async {
+                final dialogResponse = await addImageDialog(context);
+                if (dialogResponse == null) return;
+                PickedFile image = await _picker.getImage(
+                  source: dialogResponse,
+                  imageQuality: 25,
+                );
+                if (image == null) return;
+                setState(() {
+                  _recordImage = File(image.path);
+                });
+              },
+            ),
             body: CustomScrollView(
               physics: ClampingScrollPhysics(),
               slivers: <Widget>[
@@ -216,6 +239,16 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
           key: _form,
           child: Column(
             children: <Widget>[
+              if (_recordImage != null)
+                Image.file(
+                  _recordImage,
+                  fit: BoxFit.cover,
+                ),
+              if (_record.imageUrl != '' && _recordImage == null)
+                Image.network(
+                  _record.imageUrl,
+                  fit: BoxFit.cover,
+                ),
               TextFormField(
                 focusNode: _recordNameFocusNode,
                 initialValue: _initValues['name'],
@@ -294,6 +327,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                 onSaved: (value) => _record.description = value,
                 onFieldSubmitted: (_) => _submitServiceRecord(),
               ),
+              SizedBox(height: 60)
             ],
           ),
         ),

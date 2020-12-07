@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:maintenance_man_v2/providers/vehicles.dart';
+import 'package:maintenance_man_v2/widgets/add_image_dialog.dart';
 import 'package:provider/provider.dart';
 
 class AddVehicleScreen extends StatefulWidget {
@@ -217,27 +218,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
             children: <Widget>[
               GestureDetector(
                 onTap: () async {
-                  final dialogResponse = await showDialog(
-                    context: context,
-                    builder: (ctx) => AlertDialog(
-                      title: Text('Vehicle Image'),
-                      content: Text(
-                        'Would you like to take an image or choose from your gallery?',
-                      ),
-                      actions: [
-                        FlatButton(
-                          child: Text('Gallery'),
-                          onPressed: () =>
-                              Navigator.of(context).pop(ImageSource.gallery),
-                        ),
-                        FlatButton(
-                          child: Text('Camera'),
-                          onPressed: () =>
-                              Navigator.of(context).pop(ImageSource.camera),
-                        ),
-                      ],
-                    ),
-                  );
+                  final dialogResponse = await addImageDialog(context);
                   if (dialogResponse == null) return;
                   PickedFile image =
                       await _picker.getImage(source: dialogResponse);

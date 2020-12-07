@@ -105,15 +105,16 @@ class Vehicles with ChangeNotifier {
       _vehicles.firstWhere((vehicle) => vehicle.id == id);
 
   Future<String> storeAndGetImageUrl(String fileName, File imageFile) async {
-    var ref =
-        FirebaseStorage.instance.ref().child('images').child('$fileName.jpg');
+    var ref = FirebaseStorage.instance
+        .ref()
+        .child('images')
+        .child('vehicle_$fileName.jpg');
     await ref.putFile(File(imageFile.path));
     return ref.getDownloadURL();
   }
 
   Future<void> addVehicle(Vehicle vehicle, File image) async {
     final docRef = FirebaseFirestore.instance.collection('vehicles').doc().id;
-    print(docRef);
     vehicle.id = docRef;
     if (image != null) {
       vehicle.imageUrl = await storeAndGetImageUrl(docRef, image);

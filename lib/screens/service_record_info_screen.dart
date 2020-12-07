@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:maintenance_man_v2/providers/service_records.dart';
 import 'package:maintenance_man_v2/providers/vehicles.dart';
 import 'package:maintenance_man_v2/screens/add_record_screen.dart';
+import 'package:maintenance_man_v2/widgets/add_image_dialog.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
@@ -14,6 +18,7 @@ class ServiceRecordInfoScreen extends StatelessWidget {
     symbol: '\$',
     decimalDigits: 2,
   );
+  final _picker = ImagePicker();
   final String recordId;
 
   ServiceRecordInfoScreen(this.recordId);
@@ -32,9 +37,19 @@ class ServiceRecordInfoScreen extends StatelessWidget {
         floatingActionButton: _hasImage
             ? null
             : FloatingActionButton.extended(
-                icon: Icon(Icons.add_a_photo_outlined),
-                label: Text('Add Receipt'),
-                onPressed: () {},
+                icon: const Icon(Icons.add_a_photo_outlined),
+                label: const Text('Add Invoice'),
+                onPressed: () async {
+                  final dialogResponse = await addImageDialog(context);
+                  if (dialogResponse == null) return;
+                  PickedFile image = await _picker.getImage(
+                    source: dialogResponse,
+                    imageQuality: 25,
+                  );
+                  if (image == null) return;
+                  Provider.of<ServiceRecords>(context, listen: false)
+                      .updateRecord(_serviceRecord, File(image.path));
+                },
               ),
         body: CustomScrollView(
           slivers: [

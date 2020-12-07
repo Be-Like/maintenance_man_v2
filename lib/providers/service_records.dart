@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 class ServiceRecord {
@@ -96,9 +99,28 @@ class ServiceRecords with ChangeNotifier {
   ServiceRecord findById(String recordId) =>
       _records.firstWhere((record) => record.id == recordId);
 
-  Future<void> addRecord(ServiceRecord record) async {
-    var response =
-        await FirebaseFirestore.instance.collection(_recordsCollection).add({
+  Future<String> storeAndGetImageUrl(String fileName, File imageFile) async {
+    var ref = FirebaseStorage.instance
+        .ref()
+        .child('images')
+        .child('invoice_$fileName.jpg');
+    await ref.putFile(File(imageFile.path));
+    return ref.getDownloadURL();
+  }
+
+  Future<void> addRecord(ServiceRecord record, File image) async {
+    final docRef =
+        FirebaseFirestore.instance.collection(_recordsCollection).doc().id;
+    record.id = docRef;
+
+    if (image != null) {
+      record.imageUrl = await storeAndGetImageUrl(docRef, image);
+    }
+
+    await FirebaseFirestore.instance
+        .collection(_recordsCollection)
+        .doc(docRef)
+        .set({
       'name': record.name,
       'dateOfService': record.dateOfService,
       'description': record.description,
@@ -110,15 +132,18 @@ class ServiceRecords with ChangeNotifier {
       'createdAt': record.createdAt,
       'updatedAt': record.updatedAt,
     });
-    record.id = response.id;
+
     _records.insert(0, record);
     notifyListeners();
   }
 
-  Future<void> updateRecord(ServiceRecord record) async {
+  Future<void> updateRecord(ServiceRecord record, File image) async {
     final recordIndex = _records.indexWhere((el) => el.id == record.id);
     if (recordIndex >= 0) {
       try {
+        if (image != null) {
+          record.imageUrl = await storeAndGetImageUrl(record.id, image);
+        }
         record.updatedAt = DateTime.now();
         await FirebaseFirestore.instance
             .collection(_recordsCollection)
