@@ -16,7 +16,6 @@ class _AuthScreenState extends State<AuthScreen> {
   final _passwordFocusNode = FocusNode();
   String _password;
   final _confirmFocusNode = FocusNode();
-  String _confirmPassword;
 
   @override
   void dispose() {
@@ -117,15 +116,14 @@ class _AuthScreenState extends State<AuthScreen> {
                       return null;
                     },
                     onEditingComplete: () => FocusScope.of(context).unfocus(),
-                    onSaved: (value) => _confirmPassword = value,
                     onFieldSubmitted: (_) => _submitAuthForm(),
                   ),
                 SizedBox(height: 20),
-                TextButton(
+                GestureDetector(
                   child: Text(_isSignup
-                      ? 'Sign in with email'
+                      ? 'Have an account? Sign in'
                       : 'Don\'t have an account? Sign up'),
-                  onPressed: () {
+                  onTap: () {
                     setState(() {
                       _isSignup = !_isSignup;
                     });
