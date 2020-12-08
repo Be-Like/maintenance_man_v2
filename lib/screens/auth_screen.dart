@@ -32,12 +32,19 @@ class _AuthScreenState extends State<AuthScreen> {
 
     _form.currentState.save();
     try {
-      UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
-        email: _email,
-        password: _password,
-      );
-      print('Credentials: $userCredential');
+      if (_isSignup) {
+        UserCredential userCredential =
+            await _auth.createUserWithEmailAndPassword(
+          email: _email,
+          password: _password,
+        );
+      } else {
+        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: _email,
+          password: _password,
+        );
+        print('Logging in: $userCredential');
+      }
     } on FirebaseAuthException catch (err) {
       if (err.code == 'weak-password') {
         print('The password provided is too weak.');
@@ -91,6 +98,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     _confirmFocusNode,
                   ),
                   onSaved: (value) => _password = value,
+                  onFieldSubmitted: (_) => _isSignup ? null : _submitAuthForm(),
                 ),
                 if (_isSignup)
                   TextFormField(
@@ -104,6 +112,10 @@ class _AuthScreenState extends State<AuthScreen> {
                         onPressed: _submitAuthForm,
                       ),
                     ),
+                    validator: (value) {
+                      if (value != _password) return 'Passwords do not match';
+                      return null;
+                    },
                     onEditingComplete: () => FocusScope.of(context).unfocus(),
                     onSaved: (value) => _confirmPassword = value,
                     onFieldSubmitted: (_) => _submitAuthForm(),
