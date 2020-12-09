@@ -2,10 +2,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:maintenance_man_v2/custom_components/custom_color_theme.dart';
 import 'package:maintenance_man_v2/providers/auth.dart';
+import 'package:maintenance_man_v2/providers/properties.dart';
 import 'package:maintenance_man_v2/providers/vehicles.dart';
 import 'package:maintenance_man_v2/providers/service_records.dart';
 import 'package:maintenance_man_v2/screens/auth_screen.dart';
-import 'package:maintenance_man_v2/screens/vehicle_records_screen.dart';
+import 'package:maintenance_man_v2/screens/properties/property_records_screen.dart';
+import 'package:maintenance_man_v2/screens/service_records/vehicle_records_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -33,6 +35,9 @@ class MyApp extends StatelessWidget {
                   create: (ctx) => Vehicles(),
                 ),
                 ChangeNotifierProvider(
+                  create: (ctx) => Properties(),
+                ),
+                ChangeNotifierProvider(
                   create: (ctx) => ServiceRecords(),
                 ),
               ],
@@ -47,7 +52,10 @@ class MyApp extends StatelessWidget {
                     // backgroundColor: Color.fromRGBO(248, 241, 255, 1),
                   ),
                   home: auth.isAuth ? VehicleRecordsScreen() : AuthScreen(),
-                  routes: {},
+                  routes: {
+                    PropertyRecordsScreen.routeName: (ctx) =>
+                        PropertyRecordsScreen(),
+                  },
                 ),
               ),
             ),

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:maintenance_man_v2/providers/auth.dart';
+import 'package:maintenance_man_v2/screens/properties/property_records_screen.dart';
 import 'package:provider/provider.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -19,6 +20,14 @@ class AppDrawer extends StatelessWidget {
             leading: ImageIcon(AssetImage('assets/icons/car.png')),
             title: Text('Vehicle Records'),
             onTap: () => Navigator.of(context).pushReplacementNamed('/'),
+          ),
+          Divider(),
+          ListTile(
+            leading: ImageIcon(AssetImage('assets/icons/home.png')),
+            title: Text('Property Records'),
+            onTap: () => Navigator.of(context).pushReplacementNamed(
+              PropertyRecordsScreen.routeName,
+            ),
           ),
           Divider(),
           Spacer(),

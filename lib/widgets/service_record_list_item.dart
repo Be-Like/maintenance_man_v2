@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:maintenance_man_v2/providers/service_records.dart';
-import 'package:maintenance_man_v2/screens/service_record_info_screen.dart';
+import 'package:maintenance_man_v2/screens/service_records/service_record_info_screen.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 

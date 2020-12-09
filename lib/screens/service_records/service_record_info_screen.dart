@@ -5,7 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:maintenance_man_v2/providers/service_records.dart';
 import 'package:maintenance_man_v2/providers/vehicles.dart';
-import 'package:maintenance_man_v2/screens/add_record_screen.dart';
+import 'package:maintenance_man_v2/screens/service_records/add_record_screen.dart';
 import 'package:maintenance_man_v2/widgets/add_image_dialog.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';

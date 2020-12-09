@@ -41,7 +41,7 @@ class Vehicle {
     return '''\n
       Vehicle: {
         id: $id,
-        userId: $user,
+        user: $user,
         year: $year,
         make: $make,
         model: $model,

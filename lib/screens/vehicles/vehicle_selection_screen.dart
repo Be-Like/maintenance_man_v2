@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maintenance_man_v2/providers/vehicles.dart';
-import 'package:maintenance_man_v2/screens/add_vehicle_screen.dart';
+import 'package:maintenance_man_v2/screens/vehicles/add_vehicle_screen.dart';
 import 'package:maintenance_man_v2/widgets/vehicle_list_item.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
