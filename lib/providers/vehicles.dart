@@ -1,14 +1,14 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:maintenance_man_v2/providers/service_records.dart';
 
 class Vehicle {
-  // static const defaultImage =
-  //     'https://firebasestorage.googleapis.com/v0/b/maintenanceman-ef1e3.appspot.com/o/images%2FDefaultVehicle.jpg?alt=media&token=652003a1-3083-454d-9cf3-4a4e38d0c2cc';
   String id;
+  String user;
   int year;
   String make;
   String model;
@@ -21,6 +21,7 @@ class Vehicle {
 
   Vehicle({
     @required this.id,
+    @required this.user,
     @required this.year,
     @required this.make,
     @required this.model,
@@ -40,6 +41,7 @@ class Vehicle {
     return '''\n
       Vehicle: {
         id: $id,
+        userId: $user,
         year: $year,
         make: $make,
         model: $model,
@@ -64,16 +66,20 @@ class Vehicles with ChangeNotifier {
   Vehicle get selectedVehicle => _selectedVehicle;
 
   Future<void> initializeVehicles() async {
+    _vehicles = [];
     var query = await FirebaseFirestore.instance
         .collection('vehicles')
+        .where('user', isEqualTo: FirebaseAuth.instance.currentUser.uid)
         .orderBy('updatedAt', descending: true)
         .get();
+    if (query.docs.length == 0) return;
     query.docs.forEach((doc) {
       final createdAtTimestamp = doc['createdAt'] as Timestamp;
       final updatedAtTimestamp = doc['updatedAt'] as Timestamp;
       _vehicles.add(
         Vehicle(
           id: doc.id,
+          user: doc['user'],
           year: doc['year'],
           make: doc['make'],
           model: doc['model'],
@@ -121,6 +127,7 @@ class Vehicles with ChangeNotifier {
     }
 
     await FirebaseFirestore.instance.collection('vehicles').doc(docRef).set({
+      'user': FirebaseAuth.instance.currentUser.uid,
       'year': vehicle.year,
       'make': vehicle.make,
       'model': vehicle.model,
@@ -159,7 +166,6 @@ class Vehicles with ChangeNotifier {
           'mileage': vehicle.mileage,
           'color': vehicle.color.value,
           'imageUrl': vehicle.imageUrl,
-          'createdAt': vehicle.createdAt,
           'updatedAt': vehicle.updatedAt,
         });
         _vehicles.removeAt(vehicleIndex);

@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:maintenance_man_v2/providers/auth.dart';
+import 'package:provider/provider.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -26,7 +28,7 @@ class AppDrawer extends StatelessWidget {
             title: Text('Sign Out'),
             onTap: () {
               Navigator.of(context).pushReplacementNamed('/');
-              FirebaseAuth.instance.signOut();
+              Provider.of<Auth>(context, listen: false).signOut();
             },
           ),
         ],

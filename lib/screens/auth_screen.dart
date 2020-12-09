@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:maintenance_man_v2/providers/auth.dart';
+import 'package:provider/provider.dart';
 
 class AuthScreen extends StatefulWidget {
   @override
@@ -31,19 +33,28 @@ class _AuthScreenState extends State<AuthScreen> {
 
     _form.currentState.save();
     try {
-      if (_isSignup) {
-        UserCredential userCredential =
-            await _auth.createUserWithEmailAndPassword(
-          email: _email,
-          password: _password,
-        );
-      } else {
-        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-          email: _email,
-          password: _password,
-        );
-        print('Logging in: $userCredential');
-      }
+      Provider.of<Auth>(context, listen: false).authenticate(
+        _email,
+        _password,
+        _isSignup,
+      );
+      // if (_isSignup) {
+      //   // UserCredential userCredential =
+      //   //     await _auth.createUserWithEmailAndPassword(
+      //   //   email: _email,
+      //   //   password: _password,
+      //   // );
+      //   Provider.of<Auth>(context, listen: false).authenticate(
+      //     _email,
+      //     _password,
+
+      //   );
+      // } else {
+      //   Provider.of<Auth>(context, listen: false).authenticate(
+      //     _email,
+      //     _password,
+      //   );
+      // }
     } on FirebaseAuthException catch (err) {
       if (err.code == 'weak-password') {
         print('The password provided is too weak.');
@@ -96,7 +107,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   onEditingComplete: () => FocusScope.of(context).requestFocus(
                     _confirmFocusNode,
                   ),
-                  onSaved: (value) => _password = value,
+                  onChanged: (value) => _password = value,
                   onFieldSubmitted: (_) => _isSignup ? null : _submitAuthForm(),
                 ),
                 if (_isSignup)
@@ -112,6 +123,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       ),
                     ),
                     validator: (value) {
+                      print('$value == $_password');
                       if (value != _password) return 'Passwords do not match';
                       return null;
                     },

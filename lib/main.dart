@@ -1,12 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:maintenance_man_v2/custom_components/custom_color_theme.dart';
+import 'package:maintenance_man_v2/providers/auth.dart';
 import 'package:maintenance_man_v2/providers/vehicles.dart';
 import 'package:maintenance_man_v2/providers/service_records.dart';
 import 'package:maintenance_man_v2/screens/auth_screen.dart';
-import 'package:maintenance_man_v2/screens/vehicle_info_screen.dart';
-// import 'package:maintenance_man_v2/screens/auth_screen.dart';
 import 'package:maintenance_man_v2/screens/vehicle_records_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -29,34 +27,28 @@ class MyApp extends StatelessWidget {
           : MultiProvider(
               providers: [
                 ChangeNotifierProvider(
+                  create: (ctx) => Auth(),
+                ),
+                ChangeNotifierProvider(
                   create: (ctx) => Vehicles(),
                 ),
                 ChangeNotifierProvider(
                   create: (ctx) => ServiceRecords(),
                 ),
               ],
-              child: MaterialApp(
-                title: 'Maintenance Man',
-                theme: ThemeData(
-                  primarySwatch: CustomColorTheme().customColor(),
-                  // primaryColorDark: Color.fromRGBO(64, 78, 92, 1),
-                  // primaryColorLight: Color.fromRGBO(79, 98, 114, 1),
-                  accentColor: Color(0xFF7bd389),
-                  // backgroundColor: Color.fromRGBO(248, 241, 255, 1),
+              child: Consumer<Auth>(
+                builder: (ctx, auth, _) => MaterialApp(
+                  title: 'Maintenance Man',
+                  theme: ThemeData(
+                    primarySwatch: CustomColorTheme().customColor(),
+                    // primaryColorDark: Color.fromRGBO(64, 78, 92, 1),
+                    // primaryColorLight: Color.fromRGBO(79, 98, 114, 1),
+                    accentColor: Color(0xFF7bd389),
+                    // backgroundColor: Color.fromRGBO(248, 241, 255, 1),
+                  ),
+                  home: auth.isAuth ? VehicleRecordsScreen() : AuthScreen(),
+                  routes: {},
                 ),
-                home: StreamBuilder(
-                  stream: FirebaseAuth.instance.authStateChanges(),
-                  builder: (ctx, snapshot) {
-                    if (snapshot.hasData) {
-                      print('Snapshot result: ${snapshot.hasData}');
-                      return VehicleRecordsScreen();
-                    }
-                    return AuthScreen();
-                  },
-                ),
-                // home: AuthScreen(),
-                // home: VehicleRecordsScreen(),
-                routes: {},
               ),
             ),
     );

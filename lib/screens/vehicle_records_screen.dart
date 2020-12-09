@@ -25,7 +25,9 @@ class _VehicleRecordsScreenState extends State<VehicleRecordsScreen> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<Vehicles>(context).initializeVehicles().then((_) {
+      Provider.of<Vehicles>(context, listen: false)
+          .initializeVehicles()
+          .then((_) {
         setState(() {
           _isLoading = false;
         });
@@ -83,9 +85,17 @@ class _VehicleRecordsScreenState extends State<VehicleRecordsScreen> {
           : Consumer<Vehicles>(
               builder: (ctx, vehiclesData, _) => FutureBuilder(
                 future: Provider.of<ServiceRecords>(ctx, listen: false)
-                    .initializeRecords(vehiclesData.selectedVehicle.id),
+                    .initializeRecords(vehiclesData?.selectedVehicle?.id),
                 builder: (cnx, snapshot) {
+                  if (vehiclesData.selectedVehicle == null) {
+                    return Center(
+                      child: Text(
+                        'To get started, add a vehicle.',
+                      ),
+                    );
+                  }
                   if (snapshot.connectionState == ConnectionState.waiting) {
+                    print('Status: ${snapshot.connectionState}');
                     return Center(
                       child: CircularProgressIndicator(),
                     );
