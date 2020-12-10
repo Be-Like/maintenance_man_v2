@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
                     primarySwatch: CustomColorTheme().customColor(),
                     // primaryColorDark: Color.fromRGBO(64, 78, 92, 1),
                     // primaryColorLight: Color.fromRGBO(79, 98, 114, 1),
-                    accentColor: Color(0xFF7bd389),
+                    accentColor: CustomColorTheme.selectionScreenAccent,
                     // backgroundColor: Color.fromRGBO(248, 241, 255, 1),
                   ),
                   home: auth.isAuth ? VehicleRecordsScreen() : AuthScreen(),

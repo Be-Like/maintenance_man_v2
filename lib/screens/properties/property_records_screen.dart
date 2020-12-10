@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:maintenance_man_v2/providers/properties.dart';
+import 'package:maintenance_man_v2/screens/properties/property_selection_screen.dart';
 import 'package:maintenance_man_v2/widgets/app_drawer.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 class PropertyRecordsScreen extends StatefulWidget {
@@ -27,12 +29,10 @@ class _PropertyRecordsScreenState extends State<PropertyRecordsScreen> {
             const Text('Properties'),
             Consumer<Properties>(
               builder: (ctx, propertiesData, _) =>
-                  // vehiclesData.selectedVehicle == null
-                  false
+                  propertiesData.selectedProperty == null
                       ? Container()
                       : Text(
-                          'Property Name',
-                          // '${vehiclesData.selectedVehicle.vehicleName()}',
+                          '${propertiesData?.selectedProperty?.name ?? 'Property test'}',
                           style: const TextStyle(
                             fontSize: 14,
                           ),
@@ -40,6 +40,22 @@ class _PropertyRecordsScreenState extends State<PropertyRecordsScreen> {
             ),
           ],
         ),
+        actions: [
+          IconButton(
+            icon: const ImageIcon(
+              AssetImage('assets/icons/deal.png'),
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialWithModalsPageRoute(
+                  fullscreenDialog: true,
+                  builder: (ctx) => PropertySelectionScreen(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

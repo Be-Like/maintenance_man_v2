@@ -2,10 +2,12 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:maintenance_man_v2/custom_components/custom_color_theme.dart';
 import 'package:maintenance_man_v2/providers/vehicles.dart';
 import 'package:maintenance_man_v2/widgets/add_image_dialog.dart';
 import 'package:provider/provider.dart';
@@ -39,12 +41,13 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
 
   var _vehicle = Vehicle(
     id: DateTime.now().toString(),
+    user: FirebaseAuth.instance.currentUser.uid,
     year: null,
     make: '',
     model: '',
     vehicleTrim: '',
     mileage: null,
-    color: Color(0xFF7bd389),
+    color: CustomColorTheme.selectionScreenAccent,
     imageUrl: null,
   );
   var _initValues = {
@@ -95,7 +98,8 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     if (!isValid) return;
 
     if (_vehicle.mileage == null) _vehicle.mileage = 0;
-    if (_vehicle.color == null) _vehicle.color = Color(0xFF7bd389);
+    if (_vehicle.color == null)
+      _vehicle.color = CustomColorTheme.selectionScreenAccent;
     _form.currentState.save();
     if (widget.vehicleId != null) {
       try {

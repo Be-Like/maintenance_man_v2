@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:maintenance_man_v2/custom_components/custom_color_theme.dart';
 import 'package:maintenance_man_v2/providers/vehicles.dart';
 import 'package:maintenance_man_v2/screens/vehicles/add_vehicle_screen.dart';
 import 'package:maintenance_man_v2/widgets/vehicle_list_item.dart';
@@ -12,10 +13,10 @@ class VehicleSelectionScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Color(0xFF7bd389)),
+        iconTheme: IconThemeData(color: CustomColorTheme.selectionScreenAccent),
         title: Text(
           'Vehicle Select',
-          style: TextStyle(color: Color(0xFF7bd389)),
+          style: TextStyle(color: CustomColorTheme.selectionScreenAccent),
         ),
         actions: [
           IconButton(
@@ -32,7 +33,7 @@ class VehicleSelectionScreen extends StatelessWidget {
                   SnackBar(
                     content: Text(value),
                     duration: Duration(seconds: 2),
-                    backgroundColor: Color(0xFF7BD389),
+                    backgroundColor: CustomColorTheme.selectionScreenAccent,
                   ),
                 );
               });
@@ -41,11 +42,11 @@ class VehicleSelectionScreen extends StatelessWidget {
         ],
         centerTitle: true,
         elevation: 0,
-        backgroundColor: Color(0xFF4f6272),
+        backgroundColor: CustomColorTheme.selectionScreenBackground,
       ),
       body: Container(
         decoration: BoxDecoration(
-          color: Color(0xFF4f6272),
+          color: CustomColorTheme.selectionScreenBackground,
         ),
         child: ListView.builder(
           itemCount: vehicleProvider.vehicles.length,

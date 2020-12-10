@@ -57,6 +57,7 @@ flutter:
   assets:
     - assets/icons/car.png
     - assets/icons/home.png
+    - assets/icons/deal.png
     - assets/icons/vehicle_selection.png
     - assets/images/DefaultVehicle.jpg
 

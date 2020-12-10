@@ -42,4 +42,14 @@ class Property {
   }
 }
 
-class Properties extends ChangeNotifier {}
+class Properties extends ChangeNotifier {
+  Property _selectedProperty;
+
+  List<Property> _properties = [];
+
+  List<Property> get properties => [..._properties];
+
+  Property get selectedProperty => _selectedProperty;
+
+  Future<void> initializeProperties() async {}
+}

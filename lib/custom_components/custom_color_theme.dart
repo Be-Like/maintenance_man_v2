@@ -17,4 +17,7 @@ class CustomColorTheme {
   MaterialColor customColor() {
     return MaterialColor(0xFF404e5c, color);
   }
+
+  static const Color selectionScreenBackground = Color(0xFF4F6272);
+  static const Color selectionScreenAccent = Color(0xFF7BD389);
 }
