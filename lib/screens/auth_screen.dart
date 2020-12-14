@@ -104,9 +104,13 @@ class _AuthScreenState extends State<AuthScreen> {
                             onPressed: _submitAuthForm,
                           ),
                   ),
-                  onEditingComplete: () => FocusScope.of(context).requestFocus(
-                    _confirmFocusNode,
-                  ),
+                  onEditingComplete: () {
+                    _isSignup
+                        ? FocusScope.of(context).unfocus()
+                        : FocusScope.of(context).requestFocus(
+                            _confirmFocusNode,
+                          );
+                  },
                   onChanged: (value) => _password = value,
                   onFieldSubmitted: (_) => _isSignup ? null : _submitAuthForm(),
                 ),

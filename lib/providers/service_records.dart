@@ -57,6 +57,8 @@ class ServiceRecords with ChangeNotifier {
 
   List<ServiceRecord> get records => [..._records];
 
+  List<ServiceRecord> clearData() => _records = [];
+
   Future<void> initializeRecords(String recordTypeId) async {
     _records = [];
     final query = await FirebaseFirestore.instance

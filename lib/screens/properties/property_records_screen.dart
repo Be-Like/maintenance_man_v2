@@ -15,6 +15,26 @@ class PropertyRecordsScreen extends StatefulWidget {
 }
 
 class _PropertyRecordsScreenState extends State<PropertyRecordsScreen> {
+  var _isLoading = false;
+  var _isInit = true;
+
+  @override
+  void didChangeDependencies() {
+    final prov = Provider.of<Properties>(context, listen: false);
+    if (_isInit && prov.properties.length == 0) {
+      setState(() {
+        _isLoading = true;
+      });
+      prov.initializeProperties().then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,15 +48,20 @@ class _PropertyRecordsScreenState extends State<PropertyRecordsScreen> {
           children: [
             const Text('Properties'),
             Consumer<Properties>(
-              builder: (ctx, propertiesData, _) =>
-                  propertiesData.selectedProperty == null
-                      ? Container()
-                      : Text(
-                          '${propertiesData?.selectedProperty?.name ?? 'Property test'}',
-                          style: const TextStyle(
-                            fontSize: 14,
-                          ),
+              builder: (ctx, propertiesData, _) {
+                var property = propertiesData?.selectedProperty;
+                var subtitle = property?.name == null || property?.name == ''
+                    ? property?.address
+                    : property.name;
+                return property == null
+                    ? Container()
+                    : Text(
+                        '$subtitle',
+                        style: const TextStyle(
+                          fontSize: 14,
                         ),
+                      );
+              },
             ),
           ],
         ),

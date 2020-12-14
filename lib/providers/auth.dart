@@ -1,5 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:maintenance_man_v2/providers/properties.dart';
+import 'package:maintenance_man_v2/providers/service_records.dart';
+import 'package:maintenance_man_v2/providers/vehicles.dart';
 
 class Auth with ChangeNotifier {
   UserCredential _userCredential;
@@ -34,6 +37,9 @@ class Auth with ChangeNotifier {
 
   void signOut() {
     FirebaseAuth.instance.signOut();
+    Properties().clearData();
+    Vehicles().clearData();
+    ServiceRecords().clearData();
     notifyListeners();
   }
 }

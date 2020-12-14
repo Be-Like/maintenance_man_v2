@@ -65,8 +65,10 @@ class Vehicles with ChangeNotifier {
 
   Vehicle get selectedVehicle => _selectedVehicle;
 
+  List<Vehicle> clearData() => _vehicles = [];
+
   Future<void> initializeVehicles() async {
-    _vehicles = [];
+    clearData();
     var query = await FirebaseFirestore.instance
         .collection('vehicles')
         .where('user', isEqualTo: FirebaseAuth.instance.currentUser.uid)

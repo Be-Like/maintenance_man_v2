@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:maintenance_man_v2/custom_components/custom_color_theme.dart';
 import 'package:maintenance_man_v2/providers/properties.dart';
+import 'package:maintenance_man_v2/screens/properties/add_property_screen.dart';
+import 'package:maintenance_man_v2/widgets/property_list_item.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 class PropertySelectionScreen extends StatelessWidget {
@@ -20,22 +23,21 @@ class PropertySelectionScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () {
-              // showCupertinoModalBottomSheet(
-              //   expand: true,
-              //   context: context,
-              //   backgroundColor: Colors.transparent,
-              //   builder: (context) => AddVehicleScreen(),
-              // ).then((value) {
-              //   if (value == null) return;
-              //   ScaffoldMessenger.of(context).showSnackBar(
-              //     SnackBar(
-              //       content: Text(value),
-              //       duration: Duration(seconds: 2),
-              // backgroundColor: CustomColorTheme.selectionScreenAccent,
-              //     ),
-              //   );
-              // });
+            onPressed: () async {
+              final value = await showCupertinoModalBottomSheet(
+                expand: true,
+                context: context,
+                backgroundColor: Colors.transparent,
+                builder: (context) => AddPropertyScreen(),
+              );
+              if (value == null) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(value),
+                  duration: Duration(seconds: 2),
+                  backgroundColor: CustomColorTheme.selectionScreenAccent,
+                ),
+              );
             },
           )
         ],
@@ -46,6 +48,12 @@ class PropertySelectionScreen extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           color: CustomColorTheme.selectionScreenBackground,
+        ),
+        child: ListView.builder(
+          itemCount: propertyProvider.properties.length,
+          itemBuilder: (ctx, i) => PropertyListItem(
+            propertyProvider.properties[i],
+          ),
         ),
       ),
     );
