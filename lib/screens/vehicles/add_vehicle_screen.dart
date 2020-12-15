@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -70,11 +69,11 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
       if (widget.vehicleId != null) {
         _vehicle = Provider.of<Vehicles>(context).findById(widget.vehicleId);
         _initValues = {
-          'year': _vehicle.year.toString(),
+          'year': _vehicle.year?.toString(),
           'make': _vehicle.make,
           'model': _vehicle.model,
           'trim': _vehicle.vehicleTrim,
-          'mileage': _vehicle.mileage.toString(),
+          'mileage': _vehicle.mileage?.toString(),
         };
       }
     }

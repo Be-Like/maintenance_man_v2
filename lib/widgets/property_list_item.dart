@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:maintenance_man_v2/providers/properties.dart';
+import 'package:maintenance_man_v2/screens/properties/property_info_screen.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:provider/provider.dart';
 
 class PropertyListItem extends StatelessWidget {
   final Property property;
@@ -12,8 +15,27 @@ class PropertyListItem extends StatelessWidget {
         ? property.address
         : property.name;
     return GestureDetector(
-      onTap: () {},
-      onLongPress: () {},
+      onTap: () {
+        Provider.of<Properties>(context, listen: false)
+            .selectProperty(property.id);
+        Navigator.of(context).pop();
+      },
+      onLongPress: () async {
+        final res =
+            await Navigator.of(context).push(MaterialWithModalsPageRoute(
+          fullscreenDialog: true,
+          builder: (ctx) => PropertyInfoScreen(property.id),
+        ));
+        if (res != null && res['deleted']) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Property successfully deleted'),
+              duration: Duration(seconds: 2),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      },
       child: Column(
         children: [
           CircleAvatar(
@@ -27,7 +49,10 @@ class PropertyListItem extends StatelessWidget {
             ),
           ),
           SizedBox(height: 10),
-          Text(title),
+          Text(
+            title,
+            style: TextStyle(color: Colors.white),
+          ),
           SizedBox(height: 10),
         ],
       ),

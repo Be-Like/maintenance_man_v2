@@ -62,7 +62,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
         'address': _property.address,
         'name': _property.name,
         'description': _property.description,
-        'year': _property.year.toString(),
+        'year': _property.year?.toString(),
         'propertyType': _property.propertyType,
       };
     }
@@ -85,11 +85,19 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
     final isValid = _form.currentState.validate();
     if (!isValid) return;
 
-    // if (_property.year == null) _property.year = 0;
     _form.currentState.save();
+    final propName = _property.name == null || _property.name == ''
+        ? _property.address
+        : _property.name;
 
     if (widget.propertyId != null) {
-      try {} catch (err) {
+      try {
+        await Provider.of<Properties>(context, listen: false).updateProperty(
+          _property,
+          _propertyImage,
+        );
+        Navigator.of(context).pop('$propName updated');
+      } catch (err) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('Failed to update property information'),
         ));
@@ -100,9 +108,6 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
           _property,
           _propertyImage,
         );
-        final propName = _property.name == null || _property.name == ''
-            ? _property.address
-            : _property.name;
         Navigator.of(context).pop('$propName successfully added');
       } catch (err) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -226,7 +231,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                       ),
                     if (_propertyImage == null && _property.imageUrl == null)
                       Image.asset(
-                        'assets/images/DefaultVehicle.jpg',
+                        'assets/images/DefaultProperty.jpg',
                         fit: BoxFit.cover,
                         color: _property.imageUrl == null
                             ? Colors.black.withOpacity(0.3)

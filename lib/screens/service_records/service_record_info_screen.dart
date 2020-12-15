@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:maintenance_man_v2/providers/properties.dart';
 import 'package:maintenance_man_v2/providers/service_records.dart';
 import 'package:maintenance_man_v2/providers/vehicles.dart';
 import 'package:maintenance_man_v2/screens/service_records/add_record_screen.dart';
@@ -29,8 +30,11 @@ class ServiceRecordInfoScreen extends StatelessWidget {
         Provider.of<ServiceRecords>(context).findById(recordId);
     final _hasImage =
         _serviceRecord.imageUrl != '' && _serviceRecord.imageUrl != null;
-    final _recordVehicle = Provider.of<Vehicles>(context, listen: false)
-        .findById(_serviceRecord.typeId);
+    final _recordParent = _serviceRecord.type == 'Vehicle'
+        ? Provider.of<Vehicles>(context, listen: false)
+            .findById(_serviceRecord.typeId)
+        : Provider.of<Properties>(context, listen: false)
+            .findById(_serviceRecord.typeId);
     return Container(
       height: MediaQuery.of(context).size.height,
       child: Scaffold(
@@ -85,7 +89,7 @@ class ServiceRecordInfoScreen extends StatelessWidget {
                       builder: (ctx) => AlertDialog(
                         title: Text('Delete service record?'),
                         content: Text(
-                          'Are you sure you want to delete ${_serviceRecord.name} for ${_recordVehicle.vehicleName()}?',
+                          'Are you sure you want to delete ${_serviceRecord.name} for ${_recordParent.vehicleName()}?',
                         ),
                         actions: [
                           FlatButton(
@@ -129,7 +133,7 @@ class ServiceRecordInfoScreen extends StatelessWidget {
                       SizedBox(height: 10),
                       Text(
                         _serviceRecord.type == 'Vehicle'
-                            ? '${_recordVehicle.vehicleName()}'
+                            ? '${_recordParent.vehicleName()}'
                             : '${_serviceRecord.typeId}',
                         style: TextStyle(fontSize: 20),
                       ),

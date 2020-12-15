@@ -2,8 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:maintenance_man_v2/providers/properties.dart';
+import 'package:maintenance_man_v2/providers/service_records.dart';
 import 'package:maintenance_man_v2/screens/properties/property_selection_screen.dart';
+import 'package:maintenance_man_v2/screens/service_records/add_record_screen.dart';
 import 'package:maintenance_man_v2/widgets/app_drawer.dart';
+import 'package:maintenance_man_v2/widgets/service_record_list_item.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
@@ -21,7 +24,7 @@ class _PropertyRecordsScreenState extends State<PropertyRecordsScreen> {
   @override
   void didChangeDependencies() {
     final prov = Provider.of<Properties>(context, listen: false);
-    if (_isInit && prov.properties.length == 0) {
+    if (_isInit && prov.properties.length <= 0) {
       setState(() {
         _isLoading = true;
       });
@@ -81,6 +84,71 @@ class _PropertyRecordsScreenState extends State<PropertyRecordsScreen> {
             },
           ),
         ],
+      ),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Consumer<Properties>(
+              builder: (ctx, propertiesData, _) => FutureBuilder(
+                future: Provider.of<ServiceRecords>(context, listen: false)
+                    .initializeRecords(propertiesData?.selectedProperty?.id),
+                builder: (cnx, snapshot) {
+                  if (propertiesData.selectedProperty == null) {
+                    return Center(
+                      child: Text('To get started, add a property.'),
+                    );
+                  }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.error != null) {
+                    return Center(
+                      child: Text('An error occurred'),
+                    );
+                  }
+                  return Consumer<ServiceRecords>(
+                    builder: (context, serviceRecords, _) =>
+                        serviceRecords.records.length == 0
+                            ? Center(
+                                child: Text(
+                                  'No records exist for this property.',
+                                ),
+                              )
+                            : ListView.separated(
+                                separatorBuilder: (ctx, index) => Divider(),
+                                itemCount: serviceRecords.records.length,
+                                itemBuilder: (context, index) =>
+                                    ServiceRecordListItem(
+                                  serviceRecords.records[index],
+                                ),
+                              ),
+                  );
+                },
+              ),
+            ),
+      floatingActionButton: Consumer<Properties>(
+        builder: (ctx, propertyData, _) => FloatingActionButton(
+          child: Icon(Icons.add, color: Colors.white),
+          splashColor: Theme.of(context).accentColor,
+          backgroundColor: Theme.of(context).primaryColorDark,
+          onPressed: () async {
+            final res = await showCupertinoModalBottomSheet(
+              expand: true,
+              context: context,
+              builder: (ctx) => AddRecordScreen(
+                recordType: 'Property',
+                recordTypeId: propertyData.selectedProperty.id,
+              ),
+            );
+            if (res == null) return;
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(res),
+              backgroundColor: Theme.of(context).accentColor,
+            ));
+          },
+        ),
       ),
     );
   }

@@ -39,7 +39,7 @@ class Property {
         user: $user,
         address: $address,
         name: $name,
-        description: $description, 
+        description: $description,
         year: $year,
         propertyType: $propertyType,
         imageUrl: $imageUrl,
@@ -144,6 +144,47 @@ class Properties extends ChangeNotifier {
     });
 
     _properties.insert(0, property);
+    notifyListeners();
+  }
+
+  Future<void> updateProperty(Property property, File image) async {
+    final propertyIndex = _properties.indexWhere((el) => el.id == property.id);
+    if (propertyIndex <= -1) throw Error;
+
+    try {
+      if (image != null) {
+        property.imageUrl = await storeAndGetImageUrl(property.id, image);
+      }
+      property.updatedAt = DateTime.now();
+      await FirebaseFirestore.instance
+          .collection(propertyCollection)
+          .doc(property.id)
+          .update({
+        'address': property.address,
+        'name': property.name,
+        'description': property.description,
+        'year': property.year,
+        'propertyType': property.propertyType,
+        'imageUrl': property.imageUrl,
+        'updatedAt': property.updatedAt,
+      });
+      _properties.removeAt(propertyIndex);
+      _properties.insert(0, property);
+      notifyListeners();
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  void deleteProperty(String propertyId) {
+    if (_selectedProperty.id == propertyId) {
+      _selectedProperty = _properties.firstWhere((el) => el.id != propertyId);
+    }
+    _properties.removeWhere((el) => el.id == propertyId);
+    FirebaseFirestore.instance
+        .collection(propertyCollection)
+        .doc(propertyId)
+        .delete();
     notifyListeners();
   }
 }

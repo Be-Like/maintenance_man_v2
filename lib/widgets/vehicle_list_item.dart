@@ -50,7 +50,10 @@ class VehicleListItem extends StatelessWidget {
             ),
           ),
           SizedBox(height: 10),
-          Text(vehicleTitle),
+          Text(
+            vehicleTitle,
+            style: TextStyle(color: Colors.white),
+          ),
           SizedBox(height: 25),
         ],
       ),

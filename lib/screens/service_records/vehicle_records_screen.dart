@@ -21,13 +21,12 @@ class _VehicleRecordsScreenState extends State<VehicleRecordsScreen> {
 
   @override
   void didChangeDependencies() {
-    if (_isInit) {
+    final prov = Provider.of<Vehicles>(context, listen: false);
+    if (_isInit && prov.vehicles.length <= 0) {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<Vehicles>(context, listen: false)
-          .initializeVehicles()
-          .then((_) {
+      prov.initializeVehicles().then((_) {
         setState(() {
           _isLoading = false;
         });
@@ -95,7 +94,6 @@ class _VehicleRecordsScreenState extends State<VehicleRecordsScreen> {
                     );
                   }
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    print('Status: ${snapshot.connectionState}');
                     return Center(
                       child: CircularProgressIndicator(),
                     );
