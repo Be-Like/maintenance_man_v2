@@ -30,7 +30,7 @@ class ServiceRecordInfoScreen extends StatelessWidget {
         Provider.of<ServiceRecords>(context).findById(recordId);
     final _hasImage =
         _serviceRecord.imageUrl != '' && _serviceRecord.imageUrl != null;
-    final _recordParent = _serviceRecord.type == 'Vehicle'
+    dynamic _recordParent = _serviceRecord.type == 'Vehicle'
         ? Provider.of<Vehicles>(context, listen: false)
             .findById(_serviceRecord.typeId)
         : Provider.of<Properties>(context, listen: false)
@@ -89,7 +89,9 @@ class ServiceRecordInfoScreen extends StatelessWidget {
                       builder: (ctx) => AlertDialog(
                         title: Text('Delete service record?'),
                         content: Text(
-                          'Are you sure you want to delete ${_serviceRecord.name} for ${_recordParent.vehicleName()}?',
+                          _recordParent is Vehicle
+                              ? 'Are you sure you want to delete ${_serviceRecord.name} for ${_recordParent.vehicleName()}?'
+                              : 'Are you sure you wnat to delete ${_serviceRecord.name} for ${_recordParent.name ?? _recordParent.address}',
                         ),
                         actions: [
                           FlatButton(
@@ -132,9 +134,9 @@ class ServiceRecordInfoScreen extends StatelessWidget {
                     children: [
                       SizedBox(height: 10),
                       Text(
-                        _serviceRecord.type == 'Vehicle'
+                        _recordParent is Vehicle
                             ? '${_recordParent.vehicleName()}'
-                            : '${_serviceRecord.typeId}',
+                            : '${_recordParent.name ?? _recordParent.address}',
                         style: TextStyle(fontSize: 20),
                       ),
                       SizedBox(height: 10),

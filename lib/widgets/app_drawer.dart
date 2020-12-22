@@ -40,6 +40,7 @@ class AppDrawer extends StatelessWidget {
               Provider.of<Auth>(context, listen: false).signOut();
             },
           ),
+          SizedBox(height: 20),
         ],
       ),
     );
