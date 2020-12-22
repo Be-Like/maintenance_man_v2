@@ -5,13 +5,13 @@ import 'package:maintenance_man_v2/providers/service_records.dart';
 import 'package:maintenance_man_v2/providers/vehicles.dart';
 
 class Auth with ChangeNotifier {
-  UserCredential _userCredential;
+  User _userCredential;
 
   bool get isAuth {
     return FirebaseAuth.instance.currentUser != null;
   }
 
-  UserCredential get userCredential {
+  User get userCredential {
     return _userCredential;
   }
 
@@ -21,21 +21,25 @@ class Auth with ChangeNotifier {
     isSignup = false,
   ]) async {
     if (isSignup) {
-      _userCredential =
+      final _signup =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+      _userCredential = _signup.user;
     } else {
-      _userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      final _signIn = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+      _userCredential = _signIn.user;
     }
+    print('Signing in user: $_userCredential');
     notifyListeners();
   }
 
   void signOut() {
+    print('Signing out user: $_userCredential');
     FirebaseAuth.instance.signOut();
     Properties().clearData();
     Vehicles().clearData();

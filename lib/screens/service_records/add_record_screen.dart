@@ -29,13 +29,13 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
 
   static const _required = 'This field is required';
   final _form = GlobalKey<FormState>();
-  final _recordNameFocusNode = FocusNode();
+  FocusNode _recordNameFocusNode;
   final _dateFormField = TextEditingController();
   final _formattedDate = DateFormat.yMMMd();
-  final _dateOfServiceFocusNode = FocusNode();
-  final _costFocusNode = FocusNode();
-  final _descriptionFocusNode = FocusNode();
-  final _locationFocusNode = FocusNode();
+  FocusNode _dateOfServiceFocusNode;
+  FocusNode _costFocusNode;
+  FocusNode _descriptionFocusNode;
+  FocusNode _locationFocusNode;
   final _picker = ImagePicker();
   File _recordImage;
 
@@ -61,6 +61,12 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
   @override
   void initState() {
     super.initState();
+    _recordNameFocusNode = FocusNode();
+    _dateOfServiceFocusNode = FocusNode();
+    _costFocusNode = FocusNode();
+    _descriptionFocusNode = FocusNode();
+    _locationFocusNode = FocusNode();
+
     _record.type = widget.recordType;
     _record.typeId = widget.recordTypeId;
     _dateFormField.text = _formattedDate.format(DateTime.now());

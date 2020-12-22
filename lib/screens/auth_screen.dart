@@ -9,21 +9,28 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  final _auth = FirebaseAuth.instance;
   var _isLoading = false;
   var _isSignup = false;
   final _form = GlobalKey<FormState>();
-  final _emailFocusNode = FocusNode();
+  FocusNode _emailFocusNode;
   String _email;
-  final _passwordFocusNode = FocusNode();
+  FocusNode _passwordFocusNode;
   String _password;
-  final _confirmFocusNode = FocusNode();
+  FocusNode _confirmFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailFocusNode = FocusNode();
+    _passwordFocusNode = FocusNode();
+    _confirmFocusNode = FocusNode();
+  }
 
   @override
   void dispose() {
-    _emailFocusNode.dispose();
-    _passwordFocusNode.dispose();
-    _confirmFocusNode.dispose();
+    // _emailFocusNode.dispose();
+    // _passwordFocusNode.dispose();
+    // _confirmFocusNode.dispose();
     super.dispose();
   }
 
@@ -38,23 +45,6 @@ class _AuthScreenState extends State<AuthScreen> {
         _password,
         _isSignup,
       );
-      // if (_isSignup) {
-      //   // UserCredential userCredential =
-      //   //     await _auth.createUserWithEmailAndPassword(
-      //   //   email: _email,
-      //   //   password: _password,
-      //   // );
-      //   Provider.of<Auth>(context, listen: false).authenticate(
-      //     _email,
-      //     _password,
-
-      //   );
-      // } else {
-      //   Provider.of<Auth>(context, listen: false).authenticate(
-      //     _email,
-      //     _password,
-      //   );
-      // }
     } on FirebaseAuthException catch (err) {
       if (err.code == 'weak-password') {
         print('The password provided is too weak.');
