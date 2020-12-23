@@ -31,10 +31,10 @@ class Auth with ChangeNotifier {
   }
 
   void signOut() {
-    FirebaseAuth.instance.signOut();
     Properties().clearData();
     Vehicles().clearData();
     ServiceRecords().clearData();
+    FirebaseAuth.instance.signOut();
     notifyListeners();
   }
 }

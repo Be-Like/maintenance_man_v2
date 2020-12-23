@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:maintenance_man_v2/custom_components/custom_color_theme.dart';
 import 'package:maintenance_man_v2/providers/auth.dart';
 import 'package:maintenance_man_v2/screens/miscellaneous/app_info_screen.dart';
 import 'package:maintenance_man_v2/screens/miscellaneous/settings_screen.dart';
@@ -46,31 +47,40 @@ class AppDrawer extends StatelessWidget {
             },
           ),
           Divider(height: 0),
-          SizedBox(height: 7),
-          Row(
-            children: [
-              Spacer(),
-              IconButton(
-                icon: Icon(Icons.info),
-                splashRadius: 1,
-                onPressed: () async => await Navigator.of(context).push(
-                  MaterialWithModalsPageRoute(
-                    fullscreenDialog: true,
-                    builder: (ctx) => AppInfoScreen(),
+          Container(
+            color: CustomColorTheme.selectionScreenBackground,
+            padding: EdgeInsets.symmetric(vertical: 3),
+            child: Row(
+              children: [
+                Spacer(),
+                IconButton(
+                  icon: Icon(
+                    Icons.info,
+                    color: Colors.white,
+                  ),
+                  splashRadius: 1,
+                  onPressed: () async => await Navigator.of(context).push(
+                    MaterialWithModalsPageRoute(
+                      fullscreenDialog: true,
+                      builder: (ctx) => AppInfoScreen(),
+                    ),
                   ),
                 ),
-              ),
-              IconButton(
-                icon: Icon(Icons.settings),
-                splashRadius: 1,
-                onPressed: () async => await Navigator.of(context).push(
-                  MaterialWithModalsPageRoute(
-                    fullscreenDialog: true,
-                    builder: (ctx) => SettingsScreen(),
+                IconButton(
+                  icon: Icon(
+                    Icons.settings,
+                    color: Colors.white,
+                  ),
+                  splashRadius: 1,
+                  onPressed: () async => await Navigator.of(context).push(
+                    MaterialWithModalsPageRoute(
+                      fullscreenDialog: true,
+                      builder: (ctx) => SettingsScreen(),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           SizedBox(height: 20),
         ],

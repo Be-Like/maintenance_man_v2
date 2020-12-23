@@ -132,12 +132,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
         _isUpdatingUserInfo = true;
       });
       if (_updatingDisplayName) {
-        print('Updating display name');
         await user.updateProfile(displayName: displayName);
         user = FirebaseAuth.instance.currentUser;
       }
       if (_updatingEmail) {
-        print('Updating email');
         authPassword = await _reauthenticatePrompt();
         if (authPassword == null) {
           setState(() {
@@ -152,7 +150,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         user = FirebaseAuth.instance.currentUser;
       }
       if (_updatingPassword) {
-        print('Updating password');
         if (authPassword == null) {
           authPassword = await _reauthenticatePrompt();
         }
@@ -205,7 +202,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               color: CustomColorTheme.selectionScreenAccent,
             ),
             onPressed: () async {
-              print('Closed the settings');
               if (!_isEditing) return Navigator.of(context).pop();
               final res = await _abortChanges();
               if (res != null && res) Navigator.of(context).pop();
