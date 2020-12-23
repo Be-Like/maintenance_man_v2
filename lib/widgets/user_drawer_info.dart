@@ -45,7 +45,6 @@ class _UserDrawerInfoState extends State<UserDrawerInfo> {
         children: [
           GestureDetector(
             onTap: () async {
-              print(cred.userCredential);
               if (_photoUrl != null || cred.userCredential.photoURL != null) {
                 // Todo: allow user to view profile picture
                 return;
@@ -55,10 +54,8 @@ class _UserDrawerInfoState extends State<UserDrawerInfo> {
               setState(() {
                 _isLoading = true;
               });
-              final storageUrl =
-                  await _updateProfilePicture(res, cred.userCredential.uid);
+              await _updateProfilePicture(res, cred.userCredential.uid);
               setState(() {
-                _photoUrl = storageUrl;
                 _isLoading = false;
               });
             },
@@ -78,7 +75,7 @@ class _UserDrawerInfoState extends State<UserDrawerInfo> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Display Name',
+                  cred.userCredential.displayName ?? 'Display Name',
                   overflow: TextOverflow.fade,
                   style: TextStyle(
                     color: CustomColorTheme.selectionScreenAccent,

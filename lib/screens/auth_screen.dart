@@ -28,9 +28,6 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   void dispose() {
-    // _emailFocusNode.dispose();
-    // _passwordFocusNode.dispose();
-    // _confirmFocusNode.dispose();
     super.dispose();
   }
 

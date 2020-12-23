@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:maintenance_man_v2/providers/auth.dart';
 import 'package:maintenance_man_v2/screens/miscellaneous/app_info_screen.dart';
+import 'package:maintenance_man_v2/screens/miscellaneous/settings_screen.dart';
 import 'package:maintenance_man_v2/screens/properties/property_records_screen.dart';
 import 'package:maintenance_man_v2/widgets/user_drawer_info.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -45,6 +46,7 @@ class AppDrawer extends StatelessWidget {
             },
           ),
           Divider(height: 0),
+          SizedBox(height: 7),
           Row(
             children: [
               Spacer(),
@@ -61,7 +63,12 @@ class AppDrawer extends StatelessWidget {
               IconButton(
                 icon: Icon(Icons.settings),
                 splashRadius: 1,
-                onPressed: () {},
+                onPressed: () async => await Navigator.of(context).push(
+                  MaterialWithModalsPageRoute(
+                    fullscreenDialog: true,
+                    builder: (ctx) => SettingsScreen(),
+                  ),
+                ),
               ),
             ],
           ),
