@@ -22,6 +22,15 @@ class ServiceRecordListItem extends StatelessWidget {
         Provider.of<ServiceRecords>(context, listen: false);
     return Dismissible(
       key: Key(serviceRecord.id),
+      background: Container(
+        color: Colors.red,
+        alignment: AlignmentDirectional.centerEnd,
+        padding: EdgeInsets.only(right: 12),
+        child: Icon(
+          Icons.delete,
+          color: Colors.white,
+        ),
+      ),
       child: ListTile(
         title: Text(serviceRecord.name),
         subtitle: Text(_formattedDate.format(serviceRecord.dateOfService)),
