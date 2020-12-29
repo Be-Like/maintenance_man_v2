@@ -111,7 +111,8 @@ class _VehicleRecordsScreenState extends State<VehicleRecordsScreen> {
                                         'No records exist for this vehicle'),
                                   )
                                 : ListView.separated(
-                                    separatorBuilder: (ctx, index) => Divider(),
+                                    separatorBuilder: (ctx, index) =>
+                                        Divider(height: 0),
                                     itemCount: serviceRecords.records.length,
                                     itemBuilder: (context, index) =>
                                         ServiceRecordListItem(

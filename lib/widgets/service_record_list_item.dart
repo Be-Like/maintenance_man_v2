@@ -44,6 +44,31 @@ class ServiceRecordListItem extends StatelessWidget {
         },
       ),
       direction: DismissDirection.endToStart,
+      confirmDismiss: (DismissDirection direction) async {
+        return await showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text('Delete service record?'),
+            content: Text(
+              'Are you sure you want to delete ${serviceRecord.name}? This action is permanent.',
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('No'),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              FlatButton(
+                child: Text('Yes'),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
+            ],
+          ),
+        );
+      },
       onDismissed: (direction) {
         final deletedRecordIndex =
             serviceRecordsData.getIndex(serviceRecord.id);
