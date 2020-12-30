@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:maintenance_man_v2/custom_components/custom_color_theme.dart';
 import 'package:maintenance_man_v2/providers/service_records.dart';
 import 'package:maintenance_man_v2/widgets/add_image_dialog.dart';
 import 'package:provider/provider.dart';
@@ -26,6 +27,7 @@ class AddRecordScreen extends StatefulWidget {
 
 class _AddRecordScreenState extends State<AddRecordScreen> {
   var _isInit = true;
+  var _isEnabled = true;
 
   static const _required = 'This field is required';
   final _form = GlobalKey<FormState>();
@@ -102,9 +104,19 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
     super.dispose();
   }
 
-  void _submitServiceRecord() async {
+  void _setLoading(bool isLoading) {
+    setState(() {
+      _isEnabled = !isLoading;
+    });
+  }
+
+  Future<void> _submitServiceRecord() async {
     final isValid = _form.currentState.validate();
     if (!isValid) return;
+
+    _setLoading(true);
+
+    await Future.delayed(const Duration(seconds: 2));
 
     _form.currentState.save();
     if (widget.recordId != null) {
@@ -113,6 +125,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
             .updateRecord(_record, _recordImage);
         Navigator.of(context).pop('${_record.name} updated');
       } catch (err) {
+        _setLoading(false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to update service record'),
@@ -126,6 +139,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
             .addRecord(_record, _recordImage);
         Navigator.of(context).pop('${_record.name} successfully added');
       } catch (err) {
+        _setLoading(false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to add service record'),
@@ -154,6 +168,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                   ? const Text('Add Invoice')
                   : const Text('Edit Invoice'),
               onPressed: () async {
+                if (_isEnabled) return;
                 final dialogResponse = await addImageDialog(context);
                 if (dialogResponse == null) return;
                 PickedFile image = await _picker.getImage(
@@ -194,45 +209,58 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
   Widget appBar(BuildContext context) {
     return PreferredSize(
       preferredSize: Size(double.infinity, 74),
-      child: ClipRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              CupertinoButton(
-                child: Text(
-                  'Cancel',
-                  style: CupertinoTheme.of(context)
-                      .textTheme
-                      .textStyle
-                      .copyWith(color: Colors.red),
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+      child: Stack(
+        // mainAxisSize: MainAxisSize.min,
+        alignment: Alignment.bottomCenter,
+        children: [
+          ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  CupertinoButton(
+                    child: Text(
+                      'Cancel',
+                      style: CupertinoTheme.of(context)
+                          .textTheme
+                          .textStyle
+                          .copyWith(color: Colors.red),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  Text(
+                    'Service Record Form',
+                    style: CupertinoTheme.of(context)
+                        .textTheme
+                        .textStyle
+                        .copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  CupertinoButton(
+                    child: Text(
+                      'Save',
+                      style: CupertinoTheme.of(context)
+                          .textTheme
+                          .textStyle
+                          .copyWith(
+                              fontWeight: FontWeight.w500, color: Colors.red),
+                    ),
+                    onPressed: () => _submitServiceRecord(),
+                  ),
+                ],
               ),
-              Text(
-                'Service Record Form',
-                style: CupertinoTheme.of(context)
-                    .textTheme
-                    .textStyle
-                    .copyWith(fontWeight: FontWeight.w600),
-              ),
-              CupertinoButton(
-                child: Text(
-                  'Save',
-                  style: CupertinoTheme.of(context)
-                      .textTheme
-                      .textStyle
-                      .copyWith(fontWeight: FontWeight.w500, color: Colors.red),
-                ),
-                onPressed: () => _submitServiceRecord(),
-              ),
-            ],
+            ),
           ),
-        ),
+          if (!_isEnabled)
+            LinearProgressIndicator(
+              backgroundColor: Colors.white,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                  CustomColorTheme.selectionScreenBackground),
+            ),
+        ],
       ),
     );
   }
@@ -256,6 +284,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                   fit: BoxFit.cover,
                 ),
               TextFormField(
+                enabled: _isEnabled,
                 focusNode: _recordNameFocusNode,
                 initialValue: _initValues['name'],
                 textInputAction: TextInputAction.next,
@@ -267,6 +296,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                 onSaved: (value) => _record.name = value,
               ),
               TextFormField(
+                enabled: _isEnabled,
                 focusNode: _locationFocusNode,
                 initialValue: _initValues['location'],
                 textCapitalization: TextCapitalization.words,
@@ -277,6 +307,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                 onSaved: (value) => _record.location = value,
               ),
               TextFormField(
+                enabled: _isEnabled,
                 focusNode: _costFocusNode,
                 initialValue: _initValues['cost'],
                 textInputAction: TextInputAction.next,
@@ -292,6 +323,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                 },
               ),
               TextField(
+                enabled: _isEnabled,
                 controller: _dateFormField,
                 focusNode: _dateOfServiceFocusNode,
                 readOnly: true,
@@ -323,6 +355,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                 },
               ),
               TextFormField(
+                enabled: _isEnabled,
                 focusNode: _descriptionFocusNode,
                 maxLines: 3,
                 initialValue: _initValues['description'],
