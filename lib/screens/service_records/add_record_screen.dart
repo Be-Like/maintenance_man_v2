@@ -111,12 +111,11 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
   }
 
   Future<void> _submitServiceRecord() async {
+    if (!_isEnabled) return;
     final isValid = _form.currentState.validate();
     if (!isValid) return;
 
     _setLoading(true);
-
-    await Future.delayed(const Duration(seconds: 2));
 
     _form.currentState.save();
     if (widget.recordId != null) {
@@ -168,7 +167,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                   ? const Text('Add Invoice')
                   : const Text('Edit Invoice'),
               onPressed: () async {
-                if (_isEnabled) return;
+                if (!_isEnabled) return;
                 final dialogResponse = await addImageDialog(context);
                 if (dialogResponse == null) return;
                 PickedFile image = await _picker.getImage(

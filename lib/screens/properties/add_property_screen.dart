@@ -23,6 +23,7 @@ class AddPropertyScreen extends StatefulWidget {
 
 class _AddPropertyScreenState extends State<AddPropertyScreen> {
   var _isInit = true;
+  var _isEnabled = true;
   final _picker = ImagePicker();
   File _propertyImage;
 
@@ -81,9 +82,21 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
     super.dispose();
   }
 
+  void _setLoading(bool isLoading) {
+    setState(() {
+      _isEnabled = !isLoading;
+    });
+  }
+
   Future<void> _submitProperty() async {
+    if (!_isEnabled) return;
+
     final isValid = _form.currentState.validate();
     if (!isValid) return;
+
+    _setLoading(true);
+
+    await Future.delayed(const Duration(seconds: 3));
 
     _form.currentState.save();
     final propName = _property.name == null || _property.name == ''
@@ -98,6 +111,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
         );
         Navigator.of(context).pop('$propName updated');
       } catch (err) {
+        _setLoading(false);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('Failed to update property information'),
         ));
@@ -110,6 +124,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
         );
         Navigator.of(context).pop('$propName successfully added');
       } catch (err) {
+        _setLoading(false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to add property'),
@@ -212,6 +227,8 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
             children: <Widget>[
               GestureDetector(
                 onTap: () async {
+                  if (_isEnabled) return;
+
                   final dialogResponse = await addImageDialog(context);
                   if (dialogResponse == null) return;
                   PickedFile image =
@@ -252,6 +269,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                 ),
               ),
               TextFormField(
+                enabled: _isEnabled,
                 focusNode: _addressFocusNode,
                 initialValue: _initValues['address'],
                 textCapitalization: TextCapitalization.words,
@@ -268,6 +286,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                 },
               ),
               TextFormField(
+                enabled: _isEnabled,
                 focusNode: _nameFocusNode,
                 initialValue: _initValues['name'],
                 textInputAction: TextInputAction.next,
@@ -290,9 +309,12 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                           value: item,
                         ))
                     .toList(),
-                onChanged: (value) => _property.propertyType = value,
+                onChanged: _isEnabled
+                    ? (value) => _property.propertyType = value
+                    : null,
               ),
               TextFormField(
+                enabled: _isEnabled,
                 focusNode: _yearFocusNode,
                 initialValue: _initValues['year'],
                 textInputAction: TextInputAction.next,
@@ -306,6 +328,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                 },
               ),
               TextFormField(
+                enabled: _isEnabled,
                 focusNode: _descriptionFocusNode,
                 initialValue: _initValues['description'],
                 maxLines: 3,

@@ -25,6 +25,7 @@ class AddVehicleScreen extends StatefulWidget {
 
 class _AddVehicleScreenState extends State<AddVehicleScreen> {
   var _isInit = true;
+  var _isEnabled = true;
   final _picker = ImagePicker();
   File _vehicleImage;
 
@@ -92,9 +93,17 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     super.dispose();
   }
 
+  void _setLoading(bool isLoading) {
+    setState(() {
+      _isEnabled = !isLoading;
+    });
+  }
+
   Future<void> _submitVehicle() async {
     final isValid = _form.currentState.validate();
     if (!isValid) return;
+
+    _setLoading(true);
 
     if (_vehicle.mileage == null) _vehicle.mileage = 0;
     if (_vehicle.color == null)
@@ -106,6 +115,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
             .updateVehicle(widget.vehicleId, _vehicle, _vehicleImage);
         Navigator.of(context).pop('${_vehicle.vehicleName()} updated');
       } catch (err) {
+        _setLoading(false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to update vehicle information'),
@@ -119,6 +129,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
         Navigator.of(context)
             .pop('${_vehicle.vehicleName()} successfully added');
       } catch (err) {
+        _setLoading(false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to add vehicle'),
@@ -221,6 +232,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
             children: <Widget>[
               GestureDetector(
                 onTap: () async {
+                  if (!_isEnabled) return;
                   final dialogResponse = await addImageDialog(context);
                   if (dialogResponse == null) return;
                   PickedFile image =
@@ -261,6 +273,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                 ),
               ),
               TextFormField(
+                enabled: _isEnabled,
                 focusNode: _yearFocusNode,
                 initialValue: _initValues['year'],
                 textInputAction: TextInputAction.next,
@@ -272,6 +285,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                 onSaved: (value) => _vehicle.year = int.parse(value),
               ),
               TextFormField(
+                enabled: _isEnabled,
                 focusNode: _makeFocusNode,
                 initialValue: _initValues['make'],
                 textCapitalization: TextCapitalization.words,
@@ -288,6 +302,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                 },
               ),
               TextFormField(
+                enabled: _isEnabled,
                 focusNode: _modelFocusNode,
                 initialValue: _initValues['model'],
                 textInputAction: TextInputAction.next,
@@ -301,6 +316,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                 onSaved: (value) => _vehicle.model = value,
               ),
               TextFormField(
+                enabled: _isEnabled,
                 focusNode: _trimFocusNode,
                 initialValue: _initValues['trim'],
                 textInputAction: TextInputAction.next,
@@ -312,6 +328,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                 onSaved: (value) => _vehicle.vehicleTrim = value,
               ),
               TextFormField(
+                enabled: _isEnabled,
                 focusNode: _mileageFocusNode,
                 initialValue: _initValues['mileage'],
                 textInputAction: TextInputAction.go,
@@ -325,6 +342,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                 // onFieldSubmitted: (_) => _submitVehicle(),
               ),
               TextField(
+                enabled: _isEnabled,
                 readOnly: true,
                 controller: _colorController,
                 maxLines: 1,

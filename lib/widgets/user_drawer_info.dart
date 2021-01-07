@@ -59,13 +59,20 @@ class _UserDrawerInfoState extends State<UserDrawerInfo> {
                 _isLoading = false;
               });
             },
-            child: CircleAvatar(
-              radius: 50,
-              child: _isLoading ? CircularProgressIndicator() : null,
-              backgroundImage:
-                  cred?.userCredential?.photoURL == null && _photoUrl == null
-                      ? AssetImage('assets/icons/user.png')
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                CircularProgressIndicator(),
+                CircleAvatar(
+                  radius: 50,
+                  backgroundImage: cred?.userCredential?.photoURL == null &&
+                          _photoUrl == null
+                      ? AssetImage(
+                          'assets/icons/user.png',
+                        )
                       : NetworkImage(_photoUrl ?? cred.userCredential.photoURL),
+                ),
+              ],
             ),
           ),
           Container(
