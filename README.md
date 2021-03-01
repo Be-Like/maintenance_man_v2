@@ -1,6 +1,6 @@
 # maintenance_man_v2
 
-A new Flutter project.
+Fun side project to learn Flutter development
 
 ## Getting Started
 
